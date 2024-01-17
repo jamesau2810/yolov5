@@ -451,7 +451,7 @@ class CaptureImages:
         #                     f'Supported formats are:\nimages: {IMG_FORMATS}\nvideos: {VID_FORMATS}'
 
     def __iter__(self):
-        self.count = 0
+         = 0
         return self
 
     def __next__(self):
@@ -499,6 +499,7 @@ class CaptureImages:
             im = np.ascontiguousarray(im)  # contiguous
 
         return path, im, im0, self.cap, s
+        # set im,im0,self.cap,s
 
     def _new_video(self, path):
         # Create a new video capture object
