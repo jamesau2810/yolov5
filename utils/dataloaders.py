@@ -451,7 +451,7 @@ class CaptureImages:
         #                     f'Supported formats are:\nimages: {IMG_FORMATS}\nvideos: {VID_FORMATS}'
 
     def __iter__(self):
-         = 0
+        self.count = 0
         return self
 
     def __next__(self):
