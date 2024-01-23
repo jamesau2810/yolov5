@@ -147,7 +147,7 @@ def run(
 
         # Second-stage classifier (optional)
         # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
-
+        # pred : [:,:,:4]
         # Define the path for the CSV file
         csv_path = save_dir / 'predictions.csv'
 
@@ -179,28 +179,29 @@ def run(
             if len(det):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
+
                 # The result is :
                 # det
                 # Print results
-                for c in det[:, 5].unique():
-                    n = (det[:, 5] == c).sum()  # detections per class
-                    s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
+                # for c in det[:, 5].unique():
+                #     n = (det[:, 5] == c).sum()  # detections per class
+                #     s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
 
                 # Write results
-                for *xyxy, conf, cls in reversed(det):
-                    c = int(cls)  # integer class
-                    label = names[c] if hide_conf else f'{names[c]}'
-                    confidence = float(conf)
-                    confidence_str = f'{confidence:.2f}'
+                # for *xyxy, conf, cls in reversed(det):
+                #     c = int(cls)  # integer class
+                #     label = names[c] if hide_conf else f'{names[c]}'
+                #     confidence = float(conf)
+                #     confidence_str = f'{confidence:.2f}'
 
-                    if save_csv:
-                        write_to_csv(p.name, label, confidence_str)
+                #     if save_csv:
+                #         write_to_csv(p.name, label, confidence_str)
 
-                    if save_txt:  # Write to file
-                        xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                        line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
-                        with open(f'{txt_path}.txt', 'a') as f:
-                            f.write(('%g ' * len(line)).rstrip() % line + '\n')
+                #     if save_txt:  # Write to file
+                #         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
+                #         line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
+                #         with open(f'{txt_path}.txt', 'a') as f:
+                #             f.write(('%g ' * len(line)).rstrip() % line + '\n')
 
                     # # To Be commented out
                     # if save_img or save_crop or view_img:  # Add bbox to image
@@ -290,8 +291,8 @@ def parse_opt():
 
 def main(opt):
     cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
+    # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
+    # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
     cap.set(cv2.CAP_PROP_FPS, 36)
     ret, image = cap.read()
     filename = ROOT / 'temp.jpg'
