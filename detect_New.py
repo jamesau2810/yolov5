@@ -35,6 +35,7 @@ import platform
 import sys
 from pathlib import Path
 import cv2
+import numpy as np
 
 import torch
 
@@ -184,7 +185,8 @@ def run(
                 # Print results
                 for c in det[:, 5].unique():
                     n = (det[:, 5] == c).sum()  # detections per class
-                    s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
+                    det_New_ori = np.array([a for a in det if names[int(a[5])]==c])
+                    s += f"{n} {names[int(c)]}{'s' * (n > 1)}, {det_New_ori[:,:4]},"  # add to string
 
                 # Write results
                 for *xyxy, conf, cls in reversed(det):

@@ -185,7 +185,8 @@ def run(
                 cdcv = 0
                 # Sorted according to determinant score
                 det_sort = det_New.sort(key=lambda x: x[4])
-                det_best = det_sort[0,:]
+                det_best = det_sort[0]
+                xyxy_best = det_best[:4]
                 # The result is :
                 # det
                 # Print results
