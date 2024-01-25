@@ -185,8 +185,8 @@ def run(
                 # Print results
                 for c in det[:, 5].unique():
                     n = (det[:, 5] == c).sum()  # detections per class
-                    det_New_ori = np.array([a for a in det if names[int(a[5])]==c])
-                    s += f"{n} {names[int(c)]}{'s' * (n > 1)}, {det_New_ori[:,:4]},"  # add to string
+                    det_New_ori = [a for a in det if int(a[5])==c]
+                    s += f"{n} {names[int(c)]}{'s' * (n > 1)}, {det_New_ori},"  # add to string
 
                 # Write results
                 for *xyxy, conf, cls in reversed(det):
