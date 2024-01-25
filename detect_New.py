@@ -148,7 +148,7 @@ def run(
             pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
 
         toc = time.perf_counter()
-        # print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
+        print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
         # Second-stage classifier (optional)
         # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
 
