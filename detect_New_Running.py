@@ -128,6 +128,7 @@ def run(
             if model.xml and im.shape[0] > 1:
                 ims = torch.chunk(im, im.shape[0], 0)
 
+        # tic = time.perf_counter()
         # Inference
         with dt[1]:
             visualize = increment_path(save_dir / Path(path).stem, mkdir=True) if visualize else False
@@ -145,6 +146,8 @@ def run(
         with dt[2]:
             pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
 
+        # toc = time.perf_counter()
+        # print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
         # Second-stage classifier (optional)
         # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
         # pred : [:,:,:4]
@@ -187,6 +190,14 @@ def run(
                 det_sort = det_New.sort(key=lambda x: x[4])
                 det_best = det_sort[0]
                 xyxy_best = det_best[:4]
+                xmin = xyxy_best[0]
+                ymin = xyxy_best[1]
+                xmax = xyxy_best[2]
+                ymax = xyxy_best[3]
+                centre_point_x = (xmin+xmax)/2
+                centre_point_y = (ymin+ymax)/2
+                width_x = xmax-xmin
+                width_y = ymax-ymin
                 # The result is :
                 # det
                 # Print results

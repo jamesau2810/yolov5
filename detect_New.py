@@ -129,6 +129,7 @@ def run(
             if model.xml and im.shape[0] > 1:
                 ims = torch.chunk(im, im.shape[0], 0)
 
+        tic = time.perf_counter()
         # Inference
         with dt[1]:
             visualize = increment_path(save_dir / Path(path).stem, mkdir=True) if visualize else False
@@ -146,6 +147,8 @@ def run(
         with dt[2]:
             pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
 
+        toc = time.perf_counter()
+        # print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
         # Second-stage classifier (optional)
         # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
 
