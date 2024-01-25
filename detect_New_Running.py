@@ -35,7 +35,7 @@ import platform
 import sys
 from pathlib import Path
 import cv2
-
+import numpy as np
 import torch
 
 FILE = Path(__file__).resolve()
@@ -179,7 +179,13 @@ def run(
             if len(det):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
-
+                # XYXY:0,1,2,3. confidence score:4. Class:5
+                # Extracted Helipad object
+                det_New = [a for a in det if names[int(a[5])]=='helipad']
+                cdcv = 0
+                # Sorted according to determinant score
+                det_sort = det_New.sort(key=lambda x: x[4])
+                det_best = det_sort[0,:]
                 # The result is :
                 # det
                 # Print results
@@ -203,13 +209,13 @@ def run(
                 #         with open(f'{txt_path}.txt', 'a') as f:
                 #             f.write(('%g ' * len(line)).rstrip() % line + '\n')
 
-                    # # To Be commented out
-                    # if save_img or save_crop or view_img:  # Add bbox to image
-                    #     c = int(cls)  # integer class
-                    #     label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
-                    #     annotator.box_label(xyxy, label, color=colors(c, True))
-                    # if save_crop:
-                    #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
+                #     # # To Be commented out
+                #     if save_img or save_crop or view_img:  # Add bbox to image
+                #         c = int(cls)  # integer class
+                #         label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
+                #         annotator.box_label(xyxy, label, color=colors(c, True))
+                #     if save_crop:
+                #         save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
 
             # # Stream results
             # im0 = annotator.result()
