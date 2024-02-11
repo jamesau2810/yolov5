@@ -37,6 +37,9 @@ from pathlib import Path
 import cv2
 import numpy as np
 import torch
+import socket
+import usb.core
+import usb.util
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -83,6 +86,8 @@ def run(
         half=False,  # use FP16 half-precision inference
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
+        dev = usb.core.find(idVendor=0x045e, idProduct=0x028e)
+        # socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM),
 ):
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
@@ -190,6 +195,7 @@ def run(
                 det_sort = det_New.sort(key=lambda x: x[4])
                 det_best = det_sort[0]
                 xyxy_best = det_best[:4]
+                # Yogesh, start of here
                 xmin = xyxy_best[0]
                 ymin = xyxy_best[1]
                 xmax = xyxy_best[2]
@@ -198,6 +204,18 @@ def run(
                 centre_point_y = (ymin+ymax)/2
                 width_x = xmax-xmin
                 width_y = ymax-ymin
+                x,y,c =  im.shape
+                left = centre_point_x - (x/2)
+                up = centre_point_y - (y/2)
+                # Write data to the USB port
+                dev.write(1, b'Hello, World!')
+
+                # Read data from the USB port
+                data = dev.read(0x81, 1024)
+
+                # Print the data
+                print(data)
+
                 # The result is :
                 # det
                 # Print results
@@ -308,6 +326,13 @@ def parse_opt():
 
 
 def main(opt):
+    dev = usb.core.find(idVendor=0x045e, idProduct=0x028e)
+    # If the device is not found, raise an error
+    if dev is None:
+        raise ValueError('Device not found')
+
+    # Set the configuration of the USB device
+    dev.set_configuration()
     cap = cv2.VideoCapture(0)
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
@@ -318,7 +343,16 @@ def main(opt):
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # run(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-    run(weights=ROOT / 'best.pt',source=filename)
+    run(weights=ROOT / 'best.pt',source=filename,dev=dev)
+    # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    #     ret, image = cap.read()
+    #     filename = ROOT / 'temp.jpg'
+    #     cv2.imwrite(filename, image)
+    #     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
+    #     # run(**vars(opt))
+    #     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
+    #     run(weights=ROOT / 'best.pt',source=filename,dev=dev)
+    #     run(weights=ROOT / 'best.pt',source=filename) # ,socket = s
     #/home/jamesau/Downloads/yolov5-master/best.pt
     #/home/jamesau/Downloads/yolov5-master/516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg
 
@@ -329,3 +363,42 @@ if __name__ == '__main__':
     main(opt)
     # toc = time.perf_counter()
     # print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
+
+
+"""
+import usb.core
+import usb.util
+
+# Find the USB device
+dev = usb.core.find(idVendor=0x045e, idProduct=0x028e)
+
+# If the device is not found, raise an error
+if dev is None:
+    raise ValueError('Device not found')
+
+# Set the configuration of the USB device
+dev.set_configuration()
+
+# Write data to the USB port
+dev.write(1, b'Hello, World!')
+
+# Read data from the USB port
+data = dev.read(0x81, 1024)
+
+# Print the data
+print(data)
+
+
+
+import socket
+
+HOST = "127.0.0.1"  # The server's hostname or IP address
+PORT = 65432  # The port used by the server
+
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((HOST, PORT))
+    s.sendall(b"Hello, world")
+    data = s.recv(1024)
+
+print(f"Received {data!r}")
+"""

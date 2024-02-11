@@ -295,8 +295,8 @@ def parse_opt():
 
 def main(opt):
     cap = cv2.VideoCapture(0)
-    cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
-    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
+    # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
+    # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
     cap.set(cv2.CAP_PROP_FPS, 36)
     ret, image = cap.read()
     filename = ROOT / 'temp.jpg'
