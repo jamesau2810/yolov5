@@ -19,7 +19,7 @@ dev.write(1, b'Hello, World!')
 # data = dev.read(0x81, 1024)
 
 # Print the data
-print(data)
+# print(data)
 
 """
 import usb.core
