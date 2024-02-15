@@ -2,8 +2,9 @@
 # Python code transmits a byte to Arduino /Microcontroller
 import serial
 import time
-SerialObj = serial.Serial('/dev/cu.usbmodem141301') # COMxx  format on Windows
-                  # ttyUSBx format on Linux COM24
+SerialObj = serial.Serial('/dev/ttyACM0') # COMxx  format on Windows
+                  # ttyUSBx format on Linux COM24 /dev/cu.usbmodem141301
+
 SerialObj.baudrate = 9600  # set Baud rate to 9600
 SerialObj.bytesize = 8   # Number of data bits = 8
 SerialObj.parity  ='N'   # No parity
