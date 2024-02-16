@@ -87,8 +87,8 @@ def run(
         half=False,  # use FP16 half-precision inference
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
-        dev = usb.core.find(idVendor=0x045e, idProduct=0x028e),
-        socket = serial.Serial('')
+        # dev = usb.core.find(idVendor=0x045e, idProduct=0x028e),
+        serialObj = serial.Serial('/dev/ttyACM0')
         # socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM),
 ):
     source = str(source)
@@ -212,7 +212,7 @@ def run(
                 SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
                 # # Write data to the USB port
                 # dev.write(1, b'Hello, World!')
-                serial.write(SendItem.encode('UTF-8')) 
+                serialObj.write(SendItem.encode('UTF-8')) 
                 # # Read data from the USB port
                 # data = dev.read(0x81, 1024)
 
@@ -329,10 +329,10 @@ def parse_opt():
 
 
 def main(opt):
-    dev = usb.core.find(idVendor=0x045e, idProduct=0x028e)
-    # If the device is not found, raise an error
-    if dev is None:
-        raise ValueError('Device not found')
+    # dev = usb.core.find(idVendor=0x045e, idProduct=0x028e)
+    # # If the device is not found, raise an error
+    # if dev is None:
+    #     raise ValueError('Device not found')
 
     # Set the configuration of the USB device
     dev.set_configuration()
@@ -340,7 +340,7 @@ def main(opt):
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
     cap.set(cv2.CAP_PROP_FPS, 36)
-    SerialObj = serial.Serial('/dev/ttyACM0')
+    serialObj = serial.Serial('/dev/ttyACM0')
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # run(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
@@ -349,7 +349,7 @@ def main(opt):
         ret, image = cap.read()
         filename = ROOT / 'temp.jpg'
         cv2.imwrite(filename, image)
-        run(weights=ROOT / 'best.pt',source=filename,dev=dev,serial = SerialObj)
+        run(weights=ROOT / 'best.pt',source=filename,dev=dev,serialObj = serialObj)
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #     ret, image = cap.read()
     #     filename = ROOT / 'temp.jpg'
