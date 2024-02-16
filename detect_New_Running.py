@@ -40,6 +40,7 @@ import torch
 import socket
 import usb.core
 import usb.util
+import serial
 
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -86,7 +87,8 @@ def run(
         half=False,  # use FP16 half-precision inference
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
-        dev = usb.core.find(idVendor=0x045e, idProduct=0x028e)
+        dev = usb.core.find(idVendor=0x045e, idProduct=0x028e),
+        socket = serial.Serial('')
         # socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM),
 ):
     source = str(source)
@@ -207,14 +209,15 @@ def run(
                 x,y,c =  im.shape
                 left = centre_point_x - (x/2)
                 up = centre_point_y - (y/2)
-                # Write data to the USB port
-                dev.write(1, b'Hello, World!')
-
-                # Read data from the USB port
-                data = dev.read(0x81, 1024)
+                SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
+                # # Write data to the USB port
+                # dev.write(1, b'Hello, World!')
+                serial.write(SendItem.encode('UTF-8')) 
+                # # Read data from the USB port
+                # data = dev.read(0x81, 1024)
 
                 # Print the data
-                print(data)
+                # print(data)
 
                 # The result is :
                 # det
@@ -337,13 +340,16 @@ def main(opt):
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
     cap.set(cv2.CAP_PROP_FPS, 36)
-    ret, image = cap.read()
-    filename = ROOT / 'temp.jpg'
-    cv2.imwrite(filename, image)
+    SerialObj = serial.Serial('/dev/ttyACM0')
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # run(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-    run(weights=ROOT / 'best.pt',source=filename,dev=dev)
+
+    while True:
+        ret, image = cap.read()
+        filename = ROOT / 'temp.jpg'
+        cv2.imwrite(filename, image)
+        run(weights=ROOT / 'best.pt',source=filename,dev=dev,serial = SerialObj)
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #     ret, image = cap.read()
     #     filename = ROOT / 'temp.jpg'
