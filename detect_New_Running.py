@@ -335,7 +335,7 @@ def main(opt):
     #     raise ValueError('Device not found')
 
     # Set the configuration of the USB device
-    dev.set_configuration()
+    # dev.set_configuration()
     cap = cv2.VideoCapture(0)
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
@@ -349,7 +349,11 @@ def main(opt):
         ret, image = cap.read()
         filename = ROOT / 'temp.jpg'
         cv2.imwrite(filename, image)
-        run(weights=ROOT / 'best.pt',source=filename,dev=dev,serialObj = serialObj)
+        run(
+            weights=ROOT / 'best.pt',
+            source=filename,
+            # dev=dev,
+            serialObj = serialObj)
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #     ret, image = cap.read()
     #     filename = ROOT / 'temp.jpg'
