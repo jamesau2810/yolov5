@@ -2,18 +2,26 @@
 # Python code transmits a byte to Arduino /Microcontroller
 import serial
 import time
-SerialObj = serial.Serial('/dev/cu.usbmodem141101') # COMxx  format on Windows
-                  # ttyUSBx format on Linux COM24 /dev/cu.usbmodem141301 /dev/ttyACM0
+# SerialObj = serial.Serial('/dev/cu.usbmodem141101') # COMxx  format on Windows
+#                   # ttyUSBx format on Linux COM24 /dev/cu.usbmodem141301 /dev/ttyACM0
 
-SerialObj.baudrate = 9600  # set Baud rate to 9600
-SerialObj.bytesize = 8   # Number of data bits = 8
-SerialObj.parity  ='N'   # No parity
-SerialObj.stopbits = 1   # Number of Stop bits = 1
-time.sleep(3)
-SerialObj.write(b'A')    #transmit 'A' (8bit) to micro/Arduino
-SerialObj.close()      # Close the port
+# SerialObj.baudrate = 9600  # set Baud rate to 9600
+# SerialObj.bytesize = 8   # Number of data bits = 8
+# SerialObj.parity  ='N'   # No parity
+# SerialObj.stopbits = 1   # Number of Stop bits = 1
+# time.sleep(3)
+# SerialObj.write(b'A')    #transmit 'A' (8bit) to micro/Arduino
+# SerialObj.close()      # Close the port
 
-
+serialObj = serial.Serial('/dev/ttyACM0')
+left = -10
+up = 10 
+width_x = 240
+width_y = 160
+SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
+# # Write data to the USB port
+# dev.write(1, b'Hello, World!')
+serialObj.write(SendItem.encode('UTF-8'))
 
 
 
