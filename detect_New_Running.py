@@ -56,7 +56,7 @@ from utils.general import (LOGGER, Profile, check_file, check_img_size, check_im
                            increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh)
 from utils.torch_utils import select_device, smart_inference_mode
 
-def Box2Send(xyxy_best,serialObj,x,y,c):
+def Box2Send(xyxy_best,serialObj,x,y):
     xmin = xyxy_best[0]
     ymin = xyxy_best[1]
     xmax = xyxy_best[2]
@@ -216,8 +216,8 @@ def run(
                 # if det_best
                 xyxy_best = det_best[:4]
                 # Yogesh, start of here
-                x,y,c =  im.shape
-                Box2Send(xyxy_best,serialObj,x,y,c)
+                x,y =  im.shape[:2]
+                Box2Send(xyxy_best,serialObj,x,y)
                 # # Read data from the USB port
                 # data = dev.read(0x81, 1024)
 
