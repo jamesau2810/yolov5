@@ -192,27 +192,28 @@ def run(
                 # XYXY:0,1,2,3. confidence score:4. Class:5
                 # Extracted Helipad object
                 det_New = [a for a in det if names[int(a[5])]=='helipad']
-                cdcv = 0
+                # cdcv = 0
                 # Sorted according to determinant score
-                det_sort = det_New.sort(key=lambda x: x[4])
-                det_best = det_sort[0]
-                xyxy_best = det_best[:4]
-                # Yogesh, start of here
-                xmin = xyxy_best[0]
-                ymin = xyxy_best[1]
-                xmax = xyxy_best[2]
-                ymax = xyxy_best[3]
-                centre_point_x = (xmin+xmax)/2
-                centre_point_y = (ymin+ymax)/2
-                width_x = xmax-xmin
-                width_y = ymax-ymin
-                x,y,c =  im.shape
-                left = centre_point_x - (x/2)
-                up = centre_point_y - (y/2)
-                SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
-                # # Write data to the USB port
-                # dev.write(1, b'Hello, World!')
-                serialObj.write(SendItem.encode('UTF-8')) 
+                if len(det_New):
+                    det_sort = det_New.sort(key=lambda x: x[4])
+                    det_best = det_sort[0]
+                    xyxy_best = det_best[:4]
+                    # Yogesh, start of here
+                    xmin = xyxy_best[0]
+                    ymin = xyxy_best[1]
+                    xmax = xyxy_best[2]
+                    ymax = xyxy_best[3]
+                    centre_point_x = (xmin+xmax)/2
+                    centre_point_y = (ymin+ymax)/2
+                    width_x = xmax-xmin
+                    width_y = ymax-ymin
+                    x,y,c =  im.shape
+                    left = centre_point_x - (x/2)
+                    up = centre_point_y - (y/2)
+                    SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
+                    # # Write data to the USB port
+                    # dev.write(1, b'Hello, World!')
+                    serialObj.write(SendItem.encode('UTF-8')) 
                 # # Read data from the USB port
                 # data = dev.read(0x81, 1024)
 
