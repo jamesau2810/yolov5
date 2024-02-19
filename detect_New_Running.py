@@ -68,10 +68,13 @@ def Box2Send(xyxy_best,serialObj,x,y):
     
     left = centre_point_x - (x/2)
     up = centre_point_y - (y/2)
-    SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
+    # SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
+    SendItem= '{0:0=3d}'.format(left)+'{0:0=3d}'.format(up)+'{0:0=3d}'.format(width_x) + '{0:0=3d}'.format(width_y)
+    enc = SendItem.encode(encoding = "utf-8")
+    serialObj.write(enc)
     # # Write data to the USB port
     # dev.write(1, b'Hello, World!')
-    serialObj.write(SendItem.encode('UTF-8')) 
+    # serialObj.write(SendItem.encode('UTF-8')) 
 
 @smart_inference_mode()
 def run(
@@ -346,6 +349,7 @@ def main(opt):
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
     cap.set(cv2.CAP_PROP_FPS, 36)
     serialObj = serial.Serial('/dev/ttyACM0')
+    time.sleep(3)
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # run(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
