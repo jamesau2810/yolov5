@@ -63,13 +63,14 @@ def Box2Send(xyxy_best,serialObj,x,y):
     ymax = xyxy_best[3]
     centre_point_x = (xmin+xmax)/2
     centre_point_y = (ymin+ymax)/2
-    width_x = round((xmax-xmin)/ x)
-    width_y = round((ymax-ymin)/ y)
+    print(type(xmin))
+    width_x = torch.round((xmax-xmin)/ x)
+    width_y = torch.round((ymax-ymin)/ y)
     
-    left = round(centre_point_x*100 / x)#centre_point_x - (x/2)
-    up = round(centre_point_y*100 / y)#centre_point_y - (y/2)
+    left = torch.round(centre_point_x*100 / x)#centre_point_x - (x/2)
+    up = torch.round(centre_point_y*100 / y)#centre_point_y - (y/2)
 
-    width_x,width_y
+    # width_x,width_y
     # SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
     nuc_usb_test.ArduinoSent(left,up,width_x,width_y,serialObj)
     # # Write data to the USB port
