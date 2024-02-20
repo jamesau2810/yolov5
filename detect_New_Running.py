@@ -64,11 +64,11 @@ def Box2Send(xyxy_best,serialObj,x,y):
     centre_point_x = (xmin+xmax)/2
     centre_point_y = (ymin+ymax)/2
     print(type(xmin))
-    width_x = torch.round((xmax-xmin)/ x)
-    width_y = torch.round((ymax-ymin)/ y)
+    width_x = int(torch.round((xmax-xmin)/ x))
+    width_y = int(torch.round((ymax-ymin)/ y))
     
-    left = torch.round(centre_point_x*100 / x)#centre_point_x - (x/2)
-    up = torch.round(centre_point_y*100 / y)#centre_point_y - (y/2)
+    left = int(torch.round(centre_point_x*100 / x))#centre_point_x - (x/2)
+    up = int(torch.round(centre_point_y*100 / y))#centre_point_y - (y/2)
 
     # width_x,width_y
     # SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
