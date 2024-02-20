@@ -157,7 +157,7 @@ def run(
                 im = im[None]  # expand for batch dim
             if model.xml and im.shape[0] > 1:
                 ims = torch.chunk(im, im.shape[0], 0)
-
+            # print("image Size",im.size())
         # tic = time.perf_counter()
         # Inference
         with dt[1]:
@@ -238,10 +238,9 @@ def run(
                 # The result is :
                 # det
                 # Print results
-                # for c in det[:, 5].unique():
-                #     n = (det[:, 5] == c).sum()  # detections per class
-                #     s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
-
+                for c in det[:, 5].unique():
+                    n = (det[:, 5] == c).sum()  # detections per class
+                    s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
                 # Write results
                 # for *xyxy, conf, cls in reversed(det):
                 #     c = int(cls)  # integer class
@@ -296,7 +295,7 @@ def run(
             #         vid_writer[i].write(im0)
 
         # # Print time (inference-only)
-        # LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
+        LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
 
     # # Print results
     # t = tuple(x.t / seen * 1E3 for x in dt)  # speeds per image
