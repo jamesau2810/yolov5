@@ -63,7 +63,7 @@ def Box2Send(xyxy_best,serialObj,x,y):
     ymax = xyxy_best[3]
     centre_point_x = (xmin+xmax)/2
     centre_point_y = (ymin+ymax)/2
-    print(type(xmin))
+    # print(type(xmin))
     width_x = int(torch.round((xmax-xmin)/ x))
     width_y = int(torch.round((ymax-ymin)/ y))
     
