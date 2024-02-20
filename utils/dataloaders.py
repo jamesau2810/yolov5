@@ -457,7 +457,8 @@ class CaptureImages:
     def __next__(self):
         if self.count == self.nf:
             raise StopIteration
-        path = self.files[self.count]
+        path = ""
+        # path = self.files[self.count]
 
         # if self.video_flag[self.count]:
         #     # Read video
