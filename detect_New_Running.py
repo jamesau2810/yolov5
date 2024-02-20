@@ -41,7 +41,7 @@ import socket
 import usb.core
 import usb.util
 import serial
-
+import nuc_usb_test
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
@@ -69,9 +69,7 @@ def Box2Send(xyxy_best,serialObj,x,y):
     left = centre_point_x - (x/2)
     up = centre_point_y - (y/2)
     # SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
-    SendItem= '{0:0=3d}'.format(left)+'{0:0=3d}'.format(up)+'{0:0=3d}'.format(width_x) + '{0:0=3d}'.format(width_y)
-    enc = SendItem.encode(encoding = "utf-8")
-    serialObj.write(enc)
+    nuc_usb_test.ArduinoSent(left,up,width_x,width_y)
     # # Write data to the USB port
     # dev.write(1, b'Hello, World!')
     # serialObj.write(SendItem.encode('UTF-8')) 
@@ -107,7 +105,7 @@ def run(
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
         # dev = usb.core.find(idVendor=0x045e, idProduct=0x028e),
-        serialObj = serial.Serial('/dev/ttyACM0')
+        serialObj = serial.Serial()
         # socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM),
 ):
     source = str(source)
@@ -348,7 +346,7 @@ def main(opt):
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
     cap.set(cv2.CAP_PROP_FPS, 36)
-    serialObj = serial.Serial('/dev/ttyACM0')
+    serialObj = serial.Serial(nuc_usb_test.path)
     time.sleep(3)
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # run(**vars(opt))
