@@ -23,7 +23,7 @@ if __name__ == '__main__':
     # SerialObj.close()      # Close the port
     # 150070240160
     serialObj = serial.Serial(path,timeout=5)
-    serialObj.baudrate = 9600  # set Baud rate to 9600
+    # serialObj.baudrate = 9600  # set Baud rate to 9600
     # SerialObj.bytesize = 8   # Number of data bits = 8
     left = 150
     up = 120 

@@ -69,7 +69,7 @@ def Box2Send(xyxy_best,serialObj,x,y):
     left = centre_point_x - (x/2)
     up = centre_point_y - (y/2)
     # SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
-    nuc_usb_test.ArduinoSent(left,up,width_x,width_y)
+    nuc_usb_test.ArduinoSent(left,up,width_x,width_y,serialObj)
     # # Write data to the USB port
     # dev.write(1, b'Hello, World!')
     # serialObj.write(SendItem.encode('UTF-8')) 
