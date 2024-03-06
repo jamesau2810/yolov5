@@ -93,6 +93,7 @@ data = dev.read(0x81, 1024)
 print(data)
 """
 from dronekit import connect , VehicleMode , LocationGlobalRelative , APIException
+import dronekit_sitl
 import time
 import socket
 try:
@@ -102,10 +103,13 @@ except ImportError:
 import math
 import argparse
 def connectMyCopter():
-    parser = argparse.ArgumentParser(description="commands")
-    parser.add_argument("--connect")
-    args = parser.parse_args()
-    connection_string = args.connect
+    # parser = argparse.ArgumentParser(description="commands")
+    # parser.add_argument("--connect")
+    # args = parser.parse_args()
+    # connection_string = args.connect
+    sitl = dronekit_sitl.start_default()
+    connection_string = sitl.connection_string()
+
     baud_rate = False
     vehicle = connect(connection_string,baud=baud_rate,wait_ready=True)
     return vehicle
