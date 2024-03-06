@@ -95,7 +95,10 @@ print(data)
 from dronekit import connect , VehicleMode , LocationGlobalRelative , APIException
 import time
 import socket
-import exceptions
+try:
+    import exceptions
+except ImportError:
+    pass
 import math
 import argparse
 def connectMyCopter():
