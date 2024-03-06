@@ -1,4 +1,4 @@
-
+"""
 # Python code transmits a byte to Arduino /Microcontroller
 import serial
 import time
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     # # x = 0
     # # while x< 12:
     
-
+"""
 
 
 
@@ -92,3 +92,34 @@ data = dev.read(0x81, 1024)
 # Print the data
 print(data)
 """
+from dronekit import connect , VehicleMode , LocationGlobalRelative , APIException
+import time
+import socket
+import exceptions
+import math
+import argparse
+def connectMyCopter():
+    parser = argparse.ArgumentParser(description="commands")
+    parser.add_argument("--connect")
+    args = parser.parse_args()
+    connection_string = args.connect
+    baud_rate = False
+    vehicle = connect(connection_string,baud=baud_rate,wait_ready=True)
+    return vehicle
+def arm():
+    while vehicle.is_armable == False:
+        print("Waiting for vehicles to become armable")
+        time.sleep(1)
+    print("Vehicle is now armable")
+    print("")
+    vehicle.armed = True
+    while vehicle.armed == False:
+        print("Waiting for drone to become armed ")
+        time.sleep(1)
+    print("Vehicle is now armed")
+    print("props are spinning, LOOK OUT!")
+    return None
+######
+vehicle = connectMyCopter()
+arm()
+print("End of Script")
