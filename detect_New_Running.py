@@ -42,6 +42,7 @@ import usb.core
 import usb.util
 import serial
 import nuc_usb_test
+import library
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
@@ -56,26 +57,7 @@ from utils.general import (LOGGER, Profile, check_file, check_img_size, check_im
                            increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh)
 from utils.torch_utils import select_device, smart_inference_mode
 
-def Box2Send(xyxy_best,serialObj,x,y):
-    xmin = xyxy_best[0]
-    ymin = xyxy_best[1]
-    xmax = xyxy_best[2]
-    ymax = xyxy_best[3]
-    centre_point_x = (xmin+xmax)/2
-    centre_point_y = (ymin+ymax)/2
-    # print(type(xmin))
-    width_x = int(torch.round((xmax-xmin)/ x))
-    width_y = int(torch.round((ymax-ymin)/ y))
-    
-    left = int(torch.round(centre_point_x*100 / x))#centre_point_x - (x/2)
-    up = int(torch.round(centre_point_y*100 / y))#centre_point_y - (y/2)
 
-    # width_x,width_y
-    # SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
-    nuc_usb_test.ArduinoSent(left,up,width_x,width_y,serialObj)
-    # # Write data to the USB port
-    # dev.write(1, b'Hello, World!')
-    # serialObj.write(SendItem.encode('UTF-8')) 
 
 @smart_inference_mode()
 def run(
@@ -231,7 +213,7 @@ def run(
                 xyxy_best = det_best[:4]
                 # Yogesh, start of here
                 x,y =  im.shape[:2]
-                Box2Send(xyxy_best,serialObj,x,y)
+                library.Box2Send(xyxy_best,serialObj,x,y)
                 # # Read data from the USB port
                 # data = dev.read(0x81, 1024)
 
