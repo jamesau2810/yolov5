@@ -9,6 +9,7 @@ import cv2
 import numpy as np
 import torch
 import math
+import cmath
 import argparse
 import pymavlink
 import pymavlink.mavutil as mavutil
@@ -42,8 +43,18 @@ def arm(vehicle):
     print("Vehicle is now armed")
     print("props are spinning, LOOK OUT!")
     return None
-def compute_direction(vehicle):
-    angle = vehicle.heading
+def compute_direction(vehicle,x,y,x_mid,y_mid):
+    angle = math.radians(vehicle.heading)
+    xa = x-x_mid
+    ya = y-y_mid
+    cmplx_coor = complex(xa,ya)
+    length, box_angle = cmath.polar(cmplx_coor)
+    correct_angle = (box_angle + angle) % (2*np.pi)
+    res=cmath.rect(np.log10(length),correct_angle)
+    x_velo =res.real
+    y_velo = res.imag
+    send_ned_velocity(vehicle,x_velo,y_velo,0,1)
+
 
 def send_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
     """
@@ -65,22 +76,26 @@ def send_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
         vehicle.send_mavlink(msg)
         time.sleep(1)
 def Box2Send(xyxy_best,serialObj,x,y):
-    xmin = xyxy_best[0]
-    ymin = xyxy_best[1]
-    xmax = xyxy_best[2]
-    ymax = xyxy_best[3]
+    xmin = int(xyxy_best[0])
+    ymin = int(xyxy_best[1])
+    xmax = int(xyxy_best[2])
+    ymax = int(xyxy_best[3])
     centre_point_x = (xmin+xmax)/2
     centre_point_y = (ymin+ymax)/2
     # print(type(xmin))
-    width_x = int(torch.round((xmax-xmin)/ x))
-    width_y = int(torch.round((ymax-ymin)/ y))
+    width_x = int((xmax-xmin)/ x)
+    width_y = int((ymax-ymin)/ y)
+    # width_x = int(torch.round((xmax-xmin)/ x))
+    # width_y = int(torch.round((ymax-ymin)/ y))
     
-    left = int(torch.round(centre_point_x*100 / x))#centre_point_x - (x/2)
-    up = int(torch.round(centre_point_y*100 / y))#centre_point_y - (y/2)
+    left = int(centre_point_x*100 / x)
+    up = int(centre_point_y*100 / y)
+    # left = int(torch.round(centre_point_x*100 / x))#centre_point_x - (x/2)
+    # up = int(torch.round(centre_point_y*100 / y))#centre_point_y - (y/2)
 
     # width_x,width_y
     # SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
-    ArduinoSent(left,up,width_x,width_y,serialObj)
+    # ArduinoSent(left,up,width_x,width_y,serialObj)
     # # Write data to the USB port
     # dev.write(1, b'Hello, World!')
     # serialObj.write(SendItem.encode('UTF-8')) 
