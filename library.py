@@ -26,6 +26,7 @@ def connectMyCopter():
     # connection_string = args.connect
     sitl = dronekit_sitl.start_default()
     connection_string = sitl.connection_string()
+    print("Connect On:",connection_string)
     # connection_string = "/dev/ttyUSB0"
     baud_rate = 921600
     vehicle = connect(connection_string,baud=baud_rate,wait_ready=True)
