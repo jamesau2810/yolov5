@@ -95,6 +95,6 @@ vehicle = library.connectMyCopter()
 vehicle.mode = VehicleMode("GUIDED")
 
 
-library.arm(vehicle)
+vehicle = library.arm(vehicle)
 library.send_ned_velocity(vehicle,1,0,0,10)
 print("End of Script")

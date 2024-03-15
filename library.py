@@ -43,7 +43,7 @@ def arm(vehicle):
         time.sleep(1)
     print("Vehicle is now armed")
     print("props are spinning, LOOK OUT!")
-    return None
+    return vehicle
 def compute_direction(vehicle,x,y,x_mid,y_mid):
     angle = math.radians(vehicle.heading)
     xa = x-x_mid
