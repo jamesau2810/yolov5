@@ -90,7 +90,7 @@ print(data)
 """
 from dronekit import connect , VehicleMode , LocationGlobalRelative , APIException
 import library
-######
+
 vehicle = library.connectMyCopter()
 vehicle.mode = VehicleMode("GUIDED")
 

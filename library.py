@@ -27,7 +27,7 @@ def connectMyCopter():
     sitl = dronekit_sitl.start_default()
     connection_string = sitl.connection_string()
 
-    baud_rate = False
+    baud_rate = 57600
     vehicle = connect(connection_string,baud=baud_rate,wait_ready=True)
     return vehicle
 def arm(vehicle):
