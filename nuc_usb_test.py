@@ -96,5 +96,7 @@ vehicle.mode = VehicleMode("GUIDED")
 
 
 vehicle = library.arm(vehicle)
+library.printStatus(vehicle)
+vehicle.simple_takeoff(5)
 library.send_ned_velocity(vehicle,1,0,0,10)
 print("End of Script")
