@@ -98,14 +98,17 @@ vehicle.mode = VehicleMode("GUIDED")
 
 vehicle = library.arm(vehicle)
 library.printStatus(vehicle)
-aTargetAltitude = 5
-vehicle.simple_takeoff(aTargetAltitude)
-while True:
-    print(" Altitude: ", vehicle.location.global_relative_frame.alt)
-    # Break and return from function just below target altitude.
-    if vehicle.location.global_relative_frame.alt >= aTargetAltitude * 0.95:
-        print("Reached target altitude")
-        break
-    time.sleep(1)
-library.send_ned_velocity(vehicle,1,0,0,10)
-print("End of Script")
+if vehicle.is_armable:
+    aTargetAltitude = 5
+    vehicle.simple_takeoff(aTargetAltitude)
+    while True:
+        print(" Altitude: ", vehicle.location.global_relative_frame.alt)
+        # Break and return from function just below target altitude.
+        if vehicle.location.global_relative_frame.alt >= aTargetAltitude * 0.95:
+            print("Reached target altitude")
+            break
+        time.sleep(1)
+    library.send_ned_velocity(vehicle,1,0,0,10)
+    print("End of Script")
+else:
+    vehicle = library.arm(vehicle)
