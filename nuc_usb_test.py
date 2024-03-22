@@ -97,8 +97,13 @@ vehicle.mode = VehicleMode("GUIDED")
 
 
 vehicle = library.arm(vehicle)
-library.printStatus(vehicle)
-library.send_ned_velocity(vehicle,1,0,0,10)
+
+library.send_ned_velocity(vehicle,0,100,0,10)
+
+time.sleep(10)
+
+library.send_ned_velocity(vehicle,0,0,0,10)
+
 # if vehicle.is_armable:
 #     aTargetAltitude = 5
 #     vehicle.simple_takeoff(aTargetAltitude)

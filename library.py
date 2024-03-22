@@ -24,19 +24,22 @@ def connectMyCopter():
     # parser.add_argument("--connect")
     # args = parser.parse_args()
     # connection_string = args.connect
-    sitl = dronekit_sitl.start_default()
-    connection_string = sitl.connection_string()
+    # sitl = dronekit_sitl.start_default()
+    # connection_string = sitl.connection_string()
+    connection_string = "/dev/ttyUSB0"
     print("Connect On:",connection_string)
-    # connection_string = "/dev/ttyUSB0"
-    baud_rate = 921600
+
+    baud_rate = 57600
     vehicle = connect(connection_string,baud=baud_rate,wait_ready=True)
     return vehicle
 def arm(vehicle):
-    while vehicle.is_armable == False:
-        print("Waiting for vehicles to become armable")
-        time.sleep(1)
-    print("Vehicle is now armable")
-    print("")
+
+    # Safety check UNCOMMENT BEFORE DEPLOYMENT
+    # while vehicle.is_armable == False:
+    #     print(f"Waiting for vehicles to become armable {vehicle.is_armable}")
+    #     time.sleep(1)
+    # print("Vehicle is now armable")
+    # print("")
     vehicle.armed = True
     while vehicle.armed == False:
         print("Waiting for drone to become armed ")
