@@ -97,7 +97,7 @@ vehicle = library.connectMyCopter()
 
 #
 vehicle = library.arm(vehicle)
-#vehicle.
+library.takeoff(vehicle,10)
 # library.send_ned_velocity(vehicle,0,100,0,10)
 #
 # time.sleep(10)

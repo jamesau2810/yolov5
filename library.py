@@ -117,25 +117,48 @@ def printStatus(vehicle):
     print("Mode: %s" % vehicle.mode.name)  # settable
     print("Armed: %s" % vehicle.armed)  # settable
 
+def takeoff(vehicle,altitude):
+    message = vehicle.mav.command_int_encode(vehicle.target_system, vehicle.target_component,
+                                              mavutil.mavlink.MAV_CMD_TAKEOFF, 0, 1, 0, 0, 0, 0, 0, altitude)
+    vehicle.mav.send(message)
+    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    print(response)
+    # if response and response.command == mavutil.mavlink.MAV_CMD_TAKEOFF and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+    #     print("Command accepted")
+    # else:
+    #     print("Command failed")
 
 def send_ned_velocity(vehicle, velocity_x, velocity_y, velocity_z, duration):
     """
     Move vehicle in direction based on specified velocity vectors.
     """
-    msg = vehicle.message_factory.set_position_target_local_ned_encode(
-        0,  # time_boot_ms (not used)
-        0, 0,  # target system, target component
-        mavutil.mavlink.MAV_FRAME_LOCAL_NED,  # frame
-        0b0000111111000111,  # type_mask (only speeds enabled)
-        0, 0, 0,  # x, y, z positions (not used)
-        velocity_x, velocity_y, velocity_z,  # x, y, z velocity in m/s
-        0, 0, 0,  # x, y, z acceleration (not supported yet, ignored in GCS_Mavlink)
-        0, 0)  # yaw, yaw_rate (not supported yet, ignored in GCS_Mavlink)
-    # vehicle.
-    # send command to vehicle on 1 Hz cycle
-    for x in range(0, duration):
-        vehicle.send_mavlink(msg)
-        time.sleep(1)
+    # the_connection.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, the_connection.target_system,
+#                         the_connection.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, int(0b010111111000), 40, 0, -10, 0, 0, 0, 0, 0, 0, 1.57, 0.5))
+# 86
+    # type_mask = int(0b110111111000)# Use position
+    type_mask = int(0b110111000111)# USe velocity
+    # type_mask = int(0b110111000000)# USe both
+    message = mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, vehicle.target_system,
+                        vehicle.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, type_mask , 0, 0, 0, 
+                        velocity_x, velocity_y, velocity_z,
+                        0, 0, 0,
+                         1.57, 0.5)
+    vehicle.mav.send(message)
+    vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    # msg = vehicle.message_factory.set_position_target_local_ned_encode(
+    #     0,  # time_boot_ms (not used)
+    #     0, 0,  # target system, target component
+    #     mavutil.mavlink.MAV_FRAME_LOCAL_NED,  # frame
+    #     0b0000111111000111,  # type_mask (only speeds enabled)
+    #     0, 0, 0,  # x, y, z positions (not used)
+    #     velocity_x, velocity_y, velocity_z,  # x, y, z velocity in m/s
+    #     0, 0, 0,  # x, y, z acceleration (not supported yet, ignored in GCS_Mavlink)
+    #     0, 0)  # yaw, yaw_rate (not supported yet, ignored in GCS_Mavlink)
+    # # vehicle.
+    # # send command to vehicle on 1 Hz cycle
+    # for x in range(0, duration):
+    #     vehicle.send_mavlink(msg)
+    #     time.sleep(1)
 
 
 def Box2Send(xyxy_best, serialObj, x, y):
