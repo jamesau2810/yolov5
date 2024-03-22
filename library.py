@@ -29,8 +29,9 @@ def connectMyCopter():
     connection_string = "/dev/ttyUSB0"
     print("Connect On:",connection_string)
 
-    # baud_rate = 57600
-    # vehicle = connect(connection_string,baud=baud_rate,wait_ready=True)
+
+    baud_rate = 57600
+    vehicle = connect(connection_string,baud=baud_rate,wait_ready=True)
     # Start a connection listening on a UDP port
     vehicle = mavutil.mavlink_connection(connection_string)
     
@@ -39,6 +40,7 @@ def connectMyCopter():
     vehicle.wait_heartbeat()
     
     print("Heartbeat from system (system %u component %u)" % (vehicle.target_system, vehicle.target_component))
+
     return vehicle
 def arm(vehicle):
     # vehicle.mav.
@@ -60,13 +62,13 @@ def arm(vehicle):
     #     time.sleep(1)
     # print("Vehicle is now armable")
     # print("")
-    # vehicle.armed = True
-    # while vehicle.armed == False:
-    #     print("Waiting for drone to become armed ")
-    #     time.sleep(1)
-    # print("Vehicle is now armed")
-    # print("props are spinning, LOOK OUT!")
-    # return vehicle
+    vehicle.armed = True
+    while vehicle.armed == False:
+        print("Waiting for drone to become armed ")
+        time.sleep(1)
+    print("Vehicle is now armed")
+    print("props are spinning, LOOK OUT!")
+    return vehicle
 def compute_direction(vehicle,x,y,x_mid,y_mid):
     angle = math.radians(vehicle.heading)
     xa = x-x_mid
@@ -118,7 +120,7 @@ def send_ned_velocity(vehicle,velocity_x, velocity_y, velocity_z, duration):
         velocity_x, velocity_y, velocity_z, # x, y, z velocity in m/s
         0, 0, 0, # x, y, z acceleration (not supported yet, ignored in GCS_Mavlink)
         0, 0)    # yaw, yaw_rate (not supported yet, ignored in GCS_Mavlink)
-    # vehicle.
+
     # send command to vehicle on 1 Hz cycle
     for x in range(0,duration):
         vehicle.send_mavlink(msg)
