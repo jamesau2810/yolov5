@@ -31,14 +31,15 @@ def connectMyCopter():
 
     # baud_rate = 57600
     # vehicle = connect(connection_string,baud=baud_rate,wait_ready=True)
+
     # Start a connection listening on a UDP port
-    vehicle = mavutil.mavlink_connection(connection_string)
-    
+    vehicle = mavutil.mavlink_connection(connection_string, baud=57600)
     # Wait for the first heartbeat
     #   This sets the system and component ID of remote system for the link
     vehicle.wait_heartbeat()
-    
     print("Heartbeat from system (system %u component %u)" % (vehicle.target_system, vehicle.target_component))
+
+
     return vehicle
 def arm(vehicle):
     # vehicle.mav.
@@ -49,7 +50,10 @@ def arm(vehicle):
     vehicle.mav.send(message)
     # Wait for a response (blocking) to the MAV_CMD_SET_MESSAGE_INTERVAL command and print result
     response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
-    if response and response.command == mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+    print(response)
+    print(response.command, mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM)
+    print(response.result, mavutil.mavlink.MAV_RESULT_ACCEPTED)
+    if response and response.command == mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
         print("Command accepted")
     else:
         print("Command failed")

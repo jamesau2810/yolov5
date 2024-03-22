@@ -93,16 +93,16 @@ import library
 import time
 
 vehicle = library.connectMyCopter()
-vehicle.mode = VehicleMode("GUIDED")
+# vehicle.mode = VehicleMode("GUIDED")
 
-
+#
 vehicle = library.arm(vehicle)
-vehicle.
-library.send_ned_velocity(vehicle,0,100,0,10)
-
-time.sleep(10)
-
-library.send_ned_velocity(vehicle,0,0,0,10)
+#vehicle.
+# library.send_ned_velocity(vehicle,0,100,0,10)
+#
+# time.sleep(10)
+#
+# library.send_ned_velocity(vehicle,0,0,0,10)
 
 # if vehicle.is_armable:
 #     aTargetAltitude = 5
