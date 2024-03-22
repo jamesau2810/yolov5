@@ -119,7 +119,7 @@ def printStatus(vehicle):
 
 def takeoff(vehicle,altitude):
 
-    message = vehicle.mav.command_int_encode(vehicle.target_system, vehicle.target_component,
+    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
                                               mavutil.mavlink.MAV_CMD_NAV_TAKEOFF, 0, 1, 0, 0, 0, 0, 0, altitude)
 
     vehicle.mav.send(message)
