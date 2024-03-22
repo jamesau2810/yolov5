@@ -96,7 +96,7 @@ vehicle = library.connectMyCopter()
 # vehicle.mode = VehicleMode("GUIDED")
 
 #
-vehicle = library.arm(vehicle)
+library.arm(vehicle)
 library.takeoff(vehicle,10)
 # library.send_ned_velocity(vehicle,0,100,0,10)
 #
