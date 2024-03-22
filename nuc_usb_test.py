@@ -97,7 +97,7 @@ vehicle.mode = VehicleMode("GUIDED")
 
 
 vehicle = library.arm(vehicle)
-vehicle.send_mavlink
+vehicle.
 library.send_ned_velocity(vehicle,0,100,0,10)
 
 time.sleep(10)
