@@ -1,16 +1,16 @@
-from dronekit import connect, VehicleMode, LocationGlobalRelative, APIException
-import dronekit_sitl
-import socket
+# from dronekit import connect, VehicleMode, LocationGlobalRelative, APIException
+# import dronekit_sitl
+# import socket
 # try:
 #     import exceptions
 # except ImportError:
 #     pass
-import cv2
+# import cv2
 import numpy as np
-import torch
+# import torch
 import math
 import cmath
-import argparse
+# import argparse
 import pymavlink
 import pymavlink.mavutil as mavutil
 import time
@@ -30,7 +30,8 @@ def connectMyCopter():
     # connection_string = args.connect
     # sitl = dronekit_sitl.start_default()
     # connection_string = sitl.connection_string()
-    connection_string = "/dev/ttyUSB0"
+    connection_string ="/dev/cu.usbserial-14110"
+    # connection_string = "/dev/ttyUSB0"
     print("Connect On:", connection_string)
 
     # baud_rate = 57600

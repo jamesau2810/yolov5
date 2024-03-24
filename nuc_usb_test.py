@@ -88,17 +88,17 @@ data = dev.read(0x81, 1024)
 # Print the data
 print(data)
 """
-from dronekit import connect , VehicleMode , LocationGlobalRelative , APIException
+# from dronekit import connect , VehicleMode , LocationGlobalRelative , APIException
 import library
 import time
 
 vehicle = library.connectMyCopter()
-# vehicle.mode = VehicleMode("GUIDED")
+vehicle.mode = VehicleMode("GUIDED")
 
 #
 library.arm(vehicle)
 library.takeoff(vehicle,10)
-# library.send_ned_velocity(vehicle,0,100,0,10)
+# library.send_ned_velocity(vehicle,0,1,0,10)
 #
 # time.sleep(10)
 #
