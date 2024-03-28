@@ -88,6 +88,7 @@ data = dev.read(0x81, 1024)
 # Print the data
 print(data)
 """
+# python nuc_usb_test.py --connect localhost:14550
 # from dronekit import connect , VehicleMode , LocationGlobalRelative , APIException
 import library
 import time
