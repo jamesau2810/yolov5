@@ -24,13 +24,14 @@ def ArduinoSent(left, up, width_x, width_y, serialObj):
 
 
 def connectMyCopter():
-    MachineType = 1
+    MachineType = 0
     connection_string = ""
     if MachineType == 0:
         parser = argparse.ArgumentParser(description="commands")
         parser.add_argument("--connect")
         args = parser.parse_args()
-        connection_string = args.connect
+        #connection_string = args.connect
+        connection_string = "127.0.0.1:14551"
     elif MachineType == 1:
         sitl = dronekit_sitl.start_default()
         connection_string = sitl.connection_string()
