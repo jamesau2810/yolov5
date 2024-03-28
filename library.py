@@ -31,7 +31,8 @@ def connectMyCopter():
         parser.add_argument("--connect")
         args = parser.parse_args()
         #connection_string = args.connect
-        connection_string = "127.0.0.1:14551"
+        connection_string = "127.0.0.1:14550"
+        # connection_string = "127.0.0.1:14551"
     elif MachineType == 1:
         sitl = dronekit_sitl.start_default()
         connection_string = sitl.connection_string()
