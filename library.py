@@ -25,6 +25,7 @@ def ArduinoSent(left, up, width_x, width_y, serialObj):
 
 def connectMyCopter():
     MachineType = 1
+    connection_string = ""
     if MachineType == 0:
         parser = argparse.ArgumentParser(description="commands")
         parser.add_argument("--connect")
