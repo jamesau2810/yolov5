@@ -24,14 +24,19 @@ def ArduinoSent(left, up, width_x, width_y, serialObj):
 
 
 def connectMyCopter():
-    parser = argparse.ArgumentParser(description="commands")
-    parser.add_argument("--connect")
-    args = parser.parse_args()
-    connection_string = args.connect
-    # sitl = dronekit_sitl.start_default()
-    # connection_string = sitl.connection_string()
-    # connection_string ="/dev/cu.usbserial-14110"
-    # connection_string = "/dev/ttyUSB0"
+    MachineType = 1
+    if MachineType == 0:
+        parser = argparse.ArgumentParser(description="commands")
+        parser.add_argument("--connect")
+        args = parser.parse_args()
+        connection_string = args.connect
+    elif MachineType == 1:
+        sitl = dronekit_sitl.start_default()
+        connection_string = sitl.connection_string()
+    elif MachineType == 2:
+        connection_string ="/dev/cu.usbserial-14110"
+    elif MachineType == 3:
+        connection_string = "/dev/ttyUSB0"
     print("Connect On:", connection_string)
 
     # baud_rate = 57600
