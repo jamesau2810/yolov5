@@ -1,5 +1,5 @@
 # from dronekit import connect, VehicleMode, LocationGlobalRelative, APIException
-# import dronekit_sitl
+import dronekit_sitl
 # import socket
 # try:
 #     import exceptions
@@ -10,7 +10,7 @@ import numpy as np
 # import torch
 import math
 import cmath
-# import argparse
+import argparse
 import pymavlink
 import pymavlink.mavutil as mavutil
 import time
@@ -24,13 +24,13 @@ def ArduinoSent(left, up, width_x, width_y, serialObj):
 
 
 def connectMyCopter():
-    # parser = argparse.ArgumentParser(description="commands")
-    # parser.add_argument("--connect")
-    # args = parser.parse_args()
-    # connection_string = args.connect
+    parser = argparse.ArgumentParser(description="commands")
+    parser.add_argument("--connect")
+    args = parser.parse_args()
+    connection_string = args.connect
     # sitl = dronekit_sitl.start_default()
     # connection_string = sitl.connection_string()
-    connection_string ="/dev/cu.usbserial-14110"
+    # connection_string ="/dev/cu.usbserial-14110"
     # connection_string = "/dev/ttyUSB0"
     print("Connect On:", connection_string)
 
