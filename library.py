@@ -81,9 +81,10 @@ def arm(vehicle):
     # print("Vehicle is now armable")
     # print("")
     # vehicle.armed = True
-    while vehicle.armed == False:
-        print("Waiting for drone to become armed ")
-        time.sleep(1)
+    vehicle.motors_armed_wait()
+    # while vehicle.armed == False:
+    #     print("Waiting for drone to become armed ")
+    #     time.sleep(1)
     # print("Vehicle is now armed")
     # print("props are spinning, LOOK OUT!")
     # return vehicle
