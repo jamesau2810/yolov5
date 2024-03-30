@@ -72,6 +72,7 @@ def arm(vehicle):
         print("Command accepted")
     else:
         print("Command failed")
+    print(vehicle.recv_match( blocking=True))
     # vehicle.mav.send()
     # Safety check UNCOMMENT BEFORE DEPLOYMENT
     # while vehicle.is_armable == False:
