@@ -72,7 +72,7 @@ def arm(vehicle):
         print("Command accepted")
     else:
         print("Command failed")
-    print(vehicle.recv_match( blocking=True))
+    # print(vehicle.recv_match( blocking=True))
     # vehicle.mav.send()
     # Safety check UNCOMMENT BEFORE DEPLOYMENT
     # while vehicle.is_armable == False:
@@ -81,9 +81,9 @@ def arm(vehicle):
     # print("Vehicle is now armable")
     # print("")
     # vehicle.armed = True
-    # while vehicle.armed == False:
-    #     print("Waiting for drone to become armed ")
-    #     time.sleep(1)
+    while vehicle.armed == False:
+        print("Waiting for drone to become armed ")
+        time.sleep(1)
     # print("Vehicle is now armed")
     # print("props are spinning, LOOK OUT!")
     # return vehicle
