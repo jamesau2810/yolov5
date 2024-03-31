@@ -100,10 +100,11 @@ vehicle = library.connectMyCopter()
 modeUsed = "GUIDED"
 # modeUsed = "AUTO"
 vehicle.mode = VehicleMode(modeUsed)
-library.set_mode(vehicle,modeUsed)
+
 
 #
 library.arm(vehicle)
+library.set_mode(vehicle,modeUsed)
 library.takeoff(vehicle,10)
 library.return_to_launch(vehicle)
 library.disarm(vehicle)
