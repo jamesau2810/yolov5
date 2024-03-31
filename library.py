@@ -88,7 +88,23 @@ def arm(vehicle):
     # print("Vehicle is now armed")
     # print("props are spinning, LOOK OUT!")
     # return vehicle
+def disarm(vehicle):
+    # vehicle.mav.
+    #  400
 
+    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+                                              mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM, 0, 0, 0, 0, 0, 0, 0, 0)
+    # Send the COMMAND_LONG
+    vehicle.mav.send(message)
+    # Wait for a response (blocking) to the MAV_CMD_SET_MESSAGE_INTERVAL command and print result
+    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    print(response)
+    print(response.command, mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM)
+    print(response.result, mavutil.mavlink.MAV_RESULT_ACCEPTED)
+    if response and response.command == mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+        print("Command accepted")
+    else:
+        print("Command failed")
 
 def compute_direction(vehicle, x, y, x_mid, y_mid):
     angle = math.radians(vehicle.heading)
@@ -137,12 +153,12 @@ def set_mode(vehicle,mode):
     vehicle.mav.send(message)
     response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
     print(response)
-    # if response and response.command == mavutil.mavlink.MAV_CMD_TAKEOFF and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
-    #     print("Command accepted")
-    # else:
-    #     print("Command failed")
+    if response and response.command == mavutil.mavlink.MAV_CMD_DO_SET_MODE and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+        print("Command accepted")
+    else:
+        print("Command failed")
 
-def takeoff(vehicle,altitude):
+def takeoff(vehicle,altitude ):
 
     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
                                               mavutil.mavlink.MAV_CMD_NAV_TAKEOFF, 0, 1, 0, 0, 0, 0, 0, altitude)
@@ -150,10 +166,35 @@ def takeoff(vehicle,altitude):
     vehicle.mav.send(message)
     response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
     print(response)
-    # if response and response.command == mavutil.mavlink.MAV_CMD_TAKEOFF and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
-    #     print("Command accepted")
-    # else:
-    #     print("Command failed")
+    if response and response.command == mavutil.mavlink.MAV_CMD_NAV_TAKEOFF and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+        print("Command accepted")
+    else:
+        print("Command failed")
+
+def waypoint(vehicle,latitude,longitude,altitude,hold=10,acptrad=0,passrad=0,yaw = 0):
+
+    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+                                              mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, hold, acptrad, passrad, yaw, latitude, longitude, altitude )
+
+    vehicle.mav.send(message)
+    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    print(response)
+    if response and response.command == mavutil.mavlink.MAV_CMD_NAV_WAYPOINT and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+        print("Command accepted")
+    else:
+        print("Command failed")
+
+def return_to_launch(vehicle):
+    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+                                              mavutil.mavlink.MAV_CMD_NAV_RETURN_TO_LAUNCH, 0, 0, 0, 0, 0, 0, 0, 0)
+
+    vehicle.mav.send(message)
+    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    print(response)
+    if response and response.command == mavutil.mavlink.MAV_CMD_NAV_RETURN_TO_LAUNCH and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+        print("Command accepted")
+    else:
+        print("Command failed")
 
 def send_ned_velocity(vehicle, velocity_x, velocity_y, velocity_z, duration):
     """

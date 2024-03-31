@@ -105,6 +105,8 @@ library.set_mode(vehicle,modeUsed)
 #
 library.arm(vehicle)
 library.takeoff(vehicle,10)
+library.return_to_launch(vehicle)
+library.disarm(vehicle)
 # library.send_ned_velocity(vehicle,0,1,0,10)
 #
 # time.sleep(10)
