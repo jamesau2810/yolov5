@@ -95,7 +95,12 @@ import time
 from dronekit import connect, VehicleMode, LocationGlobalRelative, APIException
 vehicle = library.connectMyCopter()
 # vehicle.mode = VehicleMode("GUIDED")
-vehicle.mode = VehicleMode("STABILIZE")
+# modeUsed = ""
+# modeUsed = "STABILIZE"
+modeUsed = "GUIDED"
+# modeUsed = "AUTO"
+# vehicle.mode = VehicleMode("STABILIZE")
+library.set_mode(vehicle,modeUsed)
 
 #
 library.arm(vehicle)

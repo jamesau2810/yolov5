@@ -128,6 +128,20 @@ def printStatus(vehicle):
     print("Mode: %s" % vehicle.mode.name)  # settable
     print("Armed: %s" % vehicle.armed)  # settable
 
+def set_mode(vehicle,mode):
+    mode_dict = {"GUIDED":216,"STABILIZE":208,"AUTO":220}
+    mode_num = mode_dict[mode]
+    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+                                              mavutil.mavlink.MAV_CMD_DO_SET_MODE, 0, mode_num, 0, 0, 0, 0, 0, 0)
+
+    vehicle.mav.send(message)
+    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    print(response)
+    # if response and response.command == mavutil.mavlink.MAV_CMD_TAKEOFF and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+    #     print("Command accepted")
+    # else:
+    #     print("Command failed")
+
 def takeoff(vehicle,altitude):
 
     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
