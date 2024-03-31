@@ -145,6 +145,7 @@ def printStatus(vehicle):
     print("Armed: %s" % vehicle.armed)  # settable
 
 def set_mode(vehicle,mode):
+    # Not working
     mode_dict = {"GUIDED":216,"STABILIZE":208,"AUTO":220}
     mode_num = mode_dict[mode]
     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,

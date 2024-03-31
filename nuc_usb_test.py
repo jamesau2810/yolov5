@@ -104,7 +104,7 @@ vehicle.mode = VehicleMode(modeUsed)
 
 #
 library.arm(vehicle)
-library.set_mode(vehicle,modeUsed)
+# library.set_mode(vehicle,modeUsed)
 library.takeoff(vehicle,10)
 library.return_to_launch(vehicle)
 library.disarm(vehicle)
