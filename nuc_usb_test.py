@@ -99,7 +99,7 @@ vehicle = library.connectMyCopter()
 # modeUsed = "STABILIZE"
 modeUsed = "GUIDED"
 # modeUsed = "AUTO"
-# vehicle.mode = VehicleMode("STABILIZE")
+vehicle.mode = VehicleMode(modeUsed)
 library.set_mode(vehicle,modeUsed)
 
 #
