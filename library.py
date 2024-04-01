@@ -68,11 +68,12 @@ def arm(vehicle):
     print(response)
     print(response.command, mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM)
     print(response.result, mavutil.mavlink.MAV_RESULT_ACCEPTED)
-    print(vehicle.messages['GLOBAL_POSITION_INT'])
+    
     if response and response.command == mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
         print("Command accepted")
     else:
         print("Command failed")
+
     # print(vehicle.recv_match( blocking=True))
     # vehicle.mav.send()
     # Safety check UNCOMMENT BEFORE DEPLOYMENT
@@ -161,32 +162,35 @@ def set_mode(vehicle,mode):
         print("Command failed")
 
 def takeoff(vehicle,altitude ):
-
+    original_loc = checklocation(vehicle)
     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
                                               mavutil.mavlink.MAV_CMD_NAV_TAKEOFF, 0, 1, 0, 0, 0, 0, 0, altitude)
 
     vehicle.mav.send(message)
     response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
     print(response)
-    print(vehicle.recv_match(type='SYS_STATUS', blocking=True))
+    # print(vehicle.recv_match(type='SYS_STATUS', blocking=True))
     if response and response.command == mavutil.mavlink.MAV_CMD_NAV_TAKEOFF and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
         print("Command accepted")
     else:
         print("Command failed")
+    checkl_alt_arrived(vehicle,original_loc,altitude)
+    return
     
 def checklocation(vehicle):
-    msg = mavutil.mavlink.MAVLINK_MSG_ID_GLOBAL_POSITION_INT
-    print(waitMessage(vehicle,msg))
-# def checklocation_arrived(vehicle):
-#     msg = mavutil.mavlink.GLOBAL_POSITION_INT
-#     while True:
-        
-#         print(" Altitude: ", vehicle.location.global_relative_frame.alt)
-#         # Break and return from function just below target altitude.
-#         if vehicle.location.global_relative_frame.alt >= aTargetAltitude * 0.95:
-#             print("Reached target altitude")
-#             break
-#         time.sleep(1)
+    return vehicle.messages['GLOBAL_POSITION_INT']
+def checkl_alt_arrived(vehicle,original_pos,target_alt):
+    # msg = mavutil.mavlink.GLOBAL_POSITION_INT
+    print()
+    while True:
+        loc = vehicle.messages['GLOBAL_POSITION_INT']
+
+        print(" Altitude: ", loc.alt)
+        # Break and return from function just below target altitude.
+        if loc.alt >= original_pos.alt+(target_alt * 0.95):
+            print("Reached target altitude")
+            break
+        time.sleep(1)
 
 def waitMessage(vehicle,msgid):
     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,

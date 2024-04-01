@@ -105,11 +105,12 @@ vehicle.mode = VehicleMode(modeUsed)
 
 #
 library.arm(vehicle)
+offset = vehicle.messages['GLOBAL_POSITION_INT'].alt
 # library.set_mode(vehicle,modeUsed)
 # library.checklocation(vehicle)
-library.takeoff(vehicle,10)
+library.takeoff(vehicle,10,offset)
 
-# library.return_to_launch(vehicle)
+library.return_to_launch(vehicle)
 # library.checklocation(vehicle)
 library.disarm(vehicle)
 # library.send_ned_velocity(vehicle,0,1,0,10)
