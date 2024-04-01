@@ -90,6 +90,7 @@ def arm(vehicle):
     # print("Vehicle is now armed")
     # print("props are spinning, LOOK OUT!")
     # return vehicle
+    return
 def disarm(vehicle):
     # vehicle.mav.
     #  400
@@ -107,6 +108,7 @@ def disarm(vehicle):
         print("Command accepted")
     else:
         print("Command failed")
+    return
 
 def compute_direction(vehicle, x, y, x_mid, y_mid):
     angle = math.radians(vehicle.heading)
