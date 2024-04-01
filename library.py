@@ -68,7 +68,7 @@ def arm(vehicle):
     print(response)
     print(response.command, mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM)
     print(response.result, mavutil.mavlink.MAV_RESULT_ACCEPTED)
-    print(vehicle.recv_match(type='SYS_STATUS', blocking=True))
+    print(vehicle.messages['GLOBAL_POSITION_INT'])
     if response and response.command == mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
         print("Command accepted")
     else:
@@ -175,7 +175,7 @@ def takeoff(vehicle,altitude ):
         print("Command failed")
     
 def checklocation(vehicle):
-    msg = mavutil.mavlink.GLOBAL_POSITION_INT
+    msg = mavutil.mavlink.MAVLINK_MSG_ID_GLOBAL_POSITION_INT
     print(waitMessage(vehicle,msg))
 # def checklocation_arrived(vehicle):
 #     msg = mavutil.mavlink.GLOBAL_POSITION_INT
