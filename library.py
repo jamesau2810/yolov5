@@ -68,6 +68,7 @@ def arm(vehicle):
     print(response)
     print(response.command, mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM)
     print(response.result, mavutil.mavlink.MAV_RESULT_ACCEPTED)
+    print(vehicle.recv_match(type='SYS_STATUS', blocking=True))
     if response and response.command == mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
         print("Command accepted")
     else:
@@ -167,6 +168,7 @@ def takeoff(vehicle,altitude ):
     vehicle.mav.send(message)
     response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
     print(response)
+    print(vehicle.recv_match(type='SYS_STATUS', blocking=True))
     if response and response.command == mavutil.mavlink.MAV_CMD_NAV_TAKEOFF and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
         print("Command accepted")
     else:
