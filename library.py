@@ -171,7 +171,38 @@ def takeoff(vehicle,altitude ):
         print("Command accepted")
     else:
         print("Command failed")
+    
+def checklocation(vehicle):
+    while True:
+        message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+                                              mavutil.mavlink.MAV_CMD_REQUEST_MESSAGE, 0, GLOBAL_POSITION_INT, 0, 0, 0, 0, 0, altitude)
+        vehicle.mav.send(message)
+        print(" Altitude: ", vehicle.location.global_relative_frame.alt)
+        # Break and return from function just below target altitude.
+        if vehicle.location.global_relative_frame.alt >= aTargetAltitude * 0.95:
+            print("Reached target altitude")
+            break
+        time.sleep(1)
+def waitMessage(vehicle):
+    while True:
+        print(" Altitude: ", vehicle.location.global_relative_frame.alt)
+        # Break and return from function just below target altitude.
+        if vehicle.location.global_relative_frame.alt >= aTargetAltitude * 0.95:
+            print("Reached target altitude")
+            break
+        time.sleep(1)
+# def land_local(vehicle,altitude ):
 
+#     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+#                                               mavutil.mavlink.MAV_CMD_NAV_LAND_LOCAL, 0, 1, 0, 0, 0, 0, 0, altitude)
+
+#     vehicle.mav.send(message)
+#     response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+#     print(response)
+#     if response and response.command == mavutil.mavlink.MAV_CMD_NAV_LAND_LOCAL and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+#         print("Command accepted")
+#     else:
+#         print("Command failed")
 def waypoint(vehicle,latitude,longitude,altitude,hold=10,acptrad=0,passrad=0,yaw = 0):
 
     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
@@ -186,6 +217,8 @@ def waypoint(vehicle,latitude,longitude,altitude,hold=10,acptrad=0,passrad=0,yaw
         print("Command failed")
 
 def return_to_launch(vehicle):
+    # Auto return to launch position
+    # At a cost of being change to RTL mode
     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
                                               mavutil.mavlink.MAV_CMD_NAV_RETURN_TO_LAUNCH, 0, 0, 0, 0, 0, 0, 0, 0)
 

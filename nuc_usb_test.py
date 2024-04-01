@@ -88,6 +88,7 @@ data = dev.read(0x81, 1024)
 # Print the data
 print(data)
 """
+# No way to Set the Copter to GUIDE mode in python code, plz do so using Mission planner
 # python nuc_usb_test.py --connect localhost:14550
 # from dronekit import connect , VehicleMode , LocationGlobalRelative , APIException
 import library
@@ -105,8 +106,11 @@ vehicle.mode = VehicleMode(modeUsed)
 #
 library.arm(vehicle)
 # library.set_mode(vehicle,modeUsed)
+library.printStatus(vehicle)
 library.takeoff(vehicle,10)
-library.return_to_launch(vehicle)
+
+# library.return_to_launch(vehicle)
+library.printStatus(vehicle)
 library.disarm(vehicle)
 # library.send_ned_velocity(vehicle,0,1,0,10)
 #
