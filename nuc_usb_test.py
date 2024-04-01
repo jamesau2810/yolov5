@@ -106,11 +106,11 @@ vehicle.mode = VehicleMode(modeUsed)
 #
 library.arm(vehicle)
 # library.set_mode(vehicle,modeUsed)
-library.printStatus(vehicle)
+library.checklocation(vehicle)
 library.takeoff(vehicle,10)
 
 # library.return_to_launch(vehicle)
-library.printStatus(vehicle)
+library.checklocation(vehicle)
 library.disarm(vehicle)
 # library.send_ned_velocity(vehicle,0,1,0,10)
 #

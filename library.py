@@ -173,24 +173,26 @@ def takeoff(vehicle,altitude ):
         print("Command failed")
     
 def checklocation(vehicle):
-    while True:
-        message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
-                                              mavutil.mavlink.MAV_CMD_REQUEST_MESSAGE, 0, GLOBAL_POSITION_INT, 0, 0, 0, 0, 0, altitude)
-        vehicle.mav.send(message)
-        print(" Altitude: ", vehicle.location.global_relative_frame.alt)
-        # Break and return from function just below target altitude.
-        if vehicle.location.global_relative_frame.alt >= aTargetAltitude * 0.95:
-            print("Reached target altitude")
-            break
-        time.sleep(1)
-def waitMessage(vehicle):
-    while True:
-        print(" Altitude: ", vehicle.location.global_relative_frame.alt)
-        # Break and return from function just below target altitude.
-        if vehicle.location.global_relative_frame.alt >= aTargetAltitude * 0.95:
-            print("Reached target altitude")
-            break
-        time.sleep(1)
+    msg = mavutil.mavlink.GLOBAL_POSITION_INT
+    print(waitMessage(vehicle,msg))
+# def checklocation_arrived(vehicle):
+#     msg = mavutil.mavlink.GLOBAL_POSITION_INT
+#     while True:
+        
+#         print(" Altitude: ", vehicle.location.global_relative_frame.alt)
+#         # Break and return from function just below target altitude.
+#         if vehicle.location.global_relative_frame.alt >= aTargetAltitude * 0.95:
+#             print("Reached target altitude")
+#             break
+#         time.sleep(1)
+
+def waitMessage(vehicle,msgid):
+    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+                                              mavutil.mavlink.MAV_CMD_REQUEST_MESSAGE, 0, msgid, 0, 0, 0, 0, 0, 0)
+    vehicle.mav.send(message)
+    # Wait for a response (blocking) to the MAV_CMD_SET_MESSAGE_INTERVAL command and print result
+    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    return response
 # def land_local(vehicle,altitude ):
 
 #     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
