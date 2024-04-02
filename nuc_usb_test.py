@@ -113,7 +113,7 @@ print(ori_loc)
 # library.set_mode(vehicle,modeUsed)
 print(library.checklocation(vehicle))
 library.takeoff(vehicle,10)
-
+library.waypoint(vehicle,-353628400,1491645380,10)
 library.return_to_launch(vehicle)
 print(library.checklocation(vehicle))
 # library.disarm(vehicle)

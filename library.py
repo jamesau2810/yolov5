@@ -228,7 +228,7 @@ def check_location_arrived(vehicle,lat, lon, alt, interval):
         loc = checklocation(vehicle)
 
         # Break and return from function just below target altitude.
-        if intv_check(loc.alt,alt,interval) and intv_check(loc.lon,lon,interval) and intv_check(loc.lat,lat,interval):
+        if alt_fmla(loc.relative_alt,alt,1) and intv_check(loc.lon,lon,interval) and intv_check(loc.lat,lat,interval):
             print("Reached location")
             break
         time.sleep(1)
@@ -262,7 +262,7 @@ def waypoint(vehicle,latitude,longitude,altitude,hold=10,acptrad=0,passrad=0,yaw
     print(response)
     if response and response.command == mavutil.mavlink.MAV_CMD_NAV_WAYPOINT and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
         print("Command accepted")
-        check_location_arrived(vehicle,latitude,longitude,altitude,2)
+        check_location_arrived(vehicle,latitude,longitude,altitude,20)
         return
     else:
         print("Command failed")
