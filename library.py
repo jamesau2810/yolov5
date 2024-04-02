@@ -112,7 +112,8 @@ def compute_direction(vehicle, x, y, x_mid, y_mid):
     y_velo = res.imag
     send_ned_velocity(vehicle, x_velo, y_velo, 0, 1)
 def stream_location(vehicle):
-    msd_id = mavutil.mavlink.GLOBAL_POSITION_INT
+    # msd_id = mavutil.mavlink.GLOBAL_POSITION_INT
+    msd_id = 33
     stream_msg(vehicle,msd_id)
 def stream_msg(vehicle,msd_id):
     # msd_id = mavutil.mavlink.MAVLINK_MSG_ID_BATTERY_STATUS
