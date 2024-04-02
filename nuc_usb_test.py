@@ -106,15 +106,15 @@ vehicle.mode = VehicleMode(modeUsed)
 #
 library.arm(vehicle)
 library.stream_location(vehicle)
-ori_loc = vehicle.messages['GLOBAL_POSITION_INT']
+ori_loc = vehicle.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
 offset = ori_loc.alt
 print(ori_loc)
 
 # library.set_mode(vehicle,modeUsed)
 # library.checklocation(vehicle)
-library.takeoff(vehicle,10)
+# library.takeoff(vehicle,10)
 
-library.return_to_launch(vehicle)
+# library.return_to_launch(vehicle)
 # library.checklocation(vehicle)
 # library.disarm(vehicle)
 # library.send_ned_velocity(vehicle,0,1,0,10)

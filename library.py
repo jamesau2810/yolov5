@@ -231,6 +231,7 @@ def waitMessage(vehicle,msgid):
     # Wait for a response (blocking) to the MAV_CMD_SET_MESSAGE_INTERVAL command and print result
     response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
     return response
+
 # def land_local(vehicle,altitude ):
 
 #     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
