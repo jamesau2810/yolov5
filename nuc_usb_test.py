@@ -111,11 +111,11 @@ offset = ori_loc.alt
 print(ori_loc)
 
 # library.set_mode(vehicle,modeUsed)
-# library.checklocation(vehicle)
-# library.takeoff(vehicle,10)
+print(library.checklocation(vehicle))
+library.takeoff(vehicle,10)
 
-# library.return_to_launch(vehicle)
-# library.checklocation(vehicle)
+library.return_to_launch(vehicle)
+print(library.checklocation(vehicle))
 # library.disarm(vehicle)
 # library.send_ned_velocity(vehicle,0,1,0,10)
 #
