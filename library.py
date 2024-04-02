@@ -199,11 +199,12 @@ def takeoff(vehicle,altitude ):
         return
     
 def checklocation(vehicle):
-    return vehicle.messages['GLOBAL_POSITION_INT']
+    response = waitMessage(vehicle,33)
+    return vehicle.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
 def check_alt_arrived(vehicle,original_pos,target_alt):
     # msg = mavutil.mavlink.GLOBAL_POSITION_INT
     while True:
-        loc = vehicle.messages['GLOBAL_POSITION_INT']
+        loc = checklocation(vehicle)
 
         print(" Altitude: ", loc.relative_alt)
         # Break and return from function just below target altitude.
@@ -217,7 +218,7 @@ def intv_check(a,b,intv):
 def check_location_arrived(vehicle,lat, lon, alt, interval):
 
     while True:
-        loc = vehicle.messages['GLOBAL_POSITION_INT']
+        loc = checklocation(vehicle)
 
         # Break and return from function just below target altitude.
         if intv_check(loc.alt,alt,interval) and intv_check(loc.lon,lon,interval) and intv_check(loc.lat,lat,interval):
