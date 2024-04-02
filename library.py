@@ -187,9 +187,9 @@ def check_alt_arrived(vehicle,original_pos,target_alt):
     while True:
         loc = vehicle.messages['GLOBAL_POSITION_INT']
 
-        print(" Altitude: ", loc.alt)
+        print(" Altitude: ", loc.relative_alt)
         # Break and return from function just below target altitude.
-        if loc.alt >= original_pos.alt+(target_alt * 0.95):
+        if loc.relative_alt >= target_alt * 0.95:
             print("Reached target altitude")
             break
         time.sleep(1)
