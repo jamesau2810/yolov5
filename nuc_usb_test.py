@@ -112,7 +112,7 @@ library.takeoff(vehicle,10)
 
 library.return_to_launch(vehicle)
 # library.checklocation(vehicle)
-library.disarm(vehicle)
+# library.disarm(vehicle)
 # library.send_ned_velocity(vehicle,0,1,0,10)
 #
 # time.sleep(10)
