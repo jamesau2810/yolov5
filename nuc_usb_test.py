@@ -105,7 +105,11 @@ vehicle.mode = VehicleMode(modeUsed)
 
 #
 library.arm(vehicle)
-offset = vehicle.messages['GLOBAL_POSITION_INT'].alt
+library.stream_location(vehicle)
+ori_loc = vehicle.messages['GLOBAL_POSITION_INT']
+offset = ori_loc.alt
+print(ori_loc)
+
 # library.set_mode(vehicle,modeUsed)
 # library.checklocation(vehicle)
 library.takeoff(vehicle,10)

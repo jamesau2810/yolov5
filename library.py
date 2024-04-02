@@ -56,23 +56,8 @@ def connectMyCopter():
 
 
 def arm(vehicle):
-    # vehicle.mav.
-    #  400
-
-    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
-                                              mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM, 0, 1, 0, 0, 0, 0, 0, 0)
-    # Send the COMMAND_LONG
-    vehicle.mav.send(message)
-    # Wait for a response (blocking) to the MAV_CMD_SET_MESSAGE_INTERVAL command and print result
-    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
-    print(response)
-    print(response.command, mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM)
-    print(response.result, mavutil.mavlink.MAV_RESULT_ACCEPTED)
-    
-    if response and response.command == mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
-        print("Command accepted")
-    else:
-        print("Command failed")
+    print("Arm command")
+    arm_disarm_command(vehicle,1)
 
     # print(vehicle.recv_match( blocking=True))
     # vehicle.mav.send()
@@ -94,9 +79,14 @@ def arm(vehicle):
 def disarm(vehicle):
     # vehicle.mav.
     #  400
+    print("Disarm command")
+    arm_disarm_command(vehicle,0)
 
+
+
+def arm_disarm_command(vehicle,bit):
     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
-                                              mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM, 0, 0, 0, 0, 0, 0, 0, 0)
+                                              mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM, 0, bit, 0, 0, 0, 0, 0, 0)
     # Send the COMMAND_LONG
     vehicle.mav.send(message)
     # Wait for a response (blocking) to the MAV_CMD_SET_MESSAGE_INTERVAL command and print result
@@ -121,7 +111,34 @@ def compute_direction(vehicle, x, y, x_mid, y_mid):
     x_velo = res.real
     y_velo = res.imag
     send_ned_velocity(vehicle, x_velo, y_velo, 0, 1)
-
+def stream_location(vehicle):
+    msd_id = mavutil.mavlink.GLOBAL_POSITION_INT
+    stream_msg(vehicle,msd_id)
+def stream_msg(vehicle,msd_id):
+    # msd_id = mavutil.mavlink.MAVLINK_MSG_ID_BATTERY_STATUS
+    # Define command_long_encode message to send MAV_CMD_SET_MESSAGE_INTERVAL command
+    # param1: MAVLINK_MSG_ID_BATTERY_STATUS (message to stream)
+    # param2: 1000000 (Stream interval in microseconds)
+    message = vehicle.mav.command_long_encode(
+            vehicle.target_system,  # Target system ID
+            vehicle.target_component,  # Target component ID
+            mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL,  # ID of command to send
+            0,  # Confirmation
+            msd_id,  # param1: Message ID to be streamed
+            1000000, # param2: Interval in microseconds
+            0,       # param3 (unused)
+            0,       # param4 (unused)
+            0,       # param5 (unused)
+            0,       # param5 (unused)
+            0        # param6 (unused)
+            )
+    vehicle.mav.send(message)
+    # Wait for a response (blocking) to the MAV_CMD_SET_MESSAGE_INTERVAL command and print result
+    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    if response and response.command == mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+        print("Command Set Message Stream accepted")
+    else:
+        print("Command failed")
 
 def printStatus(vehicle):
     # vehicle is an instance of the Vehicle class
