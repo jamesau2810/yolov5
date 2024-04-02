@@ -174,16 +174,16 @@ def takeoff(vehicle,altitude ):
     # print(vehicle.recv_match(type='SYS_STATUS', blocking=True))
     if response and response.command == mavutil.mavlink.MAV_CMD_NAV_TAKEOFF and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
         print("Command accepted")
+        check_alt_arrived(vehicle,original_loc,altitude)
+        return
     else:
         print("Command failed")
-    checkl_alt_arrived(vehicle,original_loc,altitude)
-    return
+        return
     
 def checklocation(vehicle):
     return vehicle.messages['GLOBAL_POSITION_INT']
-def checkl_alt_arrived(vehicle,original_pos,target_alt):
+def check_alt_arrived(vehicle,original_pos,target_alt):
     # msg = mavutil.mavlink.GLOBAL_POSITION_INT
-    print()
     while True:
         loc = vehicle.messages['GLOBAL_POSITION_INT']
 
@@ -193,7 +193,19 @@ def checkl_alt_arrived(vehicle,original_pos,target_alt):
             print("Reached target altitude")
             break
         time.sleep(1)
+def intv_check(a,b,intv):
+    c = (a >= b-intv) and (a <= b+intv)
+    return c
+def check_location_arrived(vehicle,lat, lon, alt, interval):
 
+    while True:
+        loc = vehicle.messages['GLOBAL_POSITION_INT']
+
+        # Break and return from function just below target altitude.
+        if intv_check(loc.alt,alt,interval) and intv_check(loc.lon,lon,interval) and intv_check(loc.lat,lat,interval):
+            print("Reached location")
+            break
+        time.sleep(1)
 def waitMessage(vehicle,msgid):
     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
                                               mavutil.mavlink.MAV_CMD_REQUEST_MESSAGE, 0, msgid, 0, 0, 0, 0, 0, 0)
@@ -223,8 +235,11 @@ def waypoint(vehicle,latitude,longitude,altitude,hold=10,acptrad=0,passrad=0,yaw
     print(response)
     if response and response.command == mavutil.mavlink.MAV_CMD_NAV_WAYPOINT and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
         print("Command accepted")
+        check_location_arrived(vehicle,latitude,longitude,altitude,2)
+        return
     else:
         print("Command failed")
+        return
 
 def return_to_launch(vehicle):
     # Auto return to launch position
