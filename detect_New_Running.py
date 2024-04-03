@@ -75,7 +75,7 @@ def main(opt):
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
     cap.set(cv2.CAP_PROP_FPS, 36)
-    serialObj = serial.Serial(library.pixhawk_path)
+    # serialObj = serial.Serial(library.pixhawk_path)
     time.sleep(3)
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # library.run_yolo_loop(**vars(opt))

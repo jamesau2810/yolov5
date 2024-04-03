@@ -123,7 +123,7 @@ def run_yolo_loop(
     for path1, im, im0s, vid_cap, s in dataset:
         # path = path1
 
-        pred = func_a(dt,model,augment,conf_thres,iou_thres,classes,agnostic_nms,max_det)
+        pred = func_a(dt,im,model,augment,conf_thres,iou_thres,classes,agnostic_nms,max_det)
 
         # toc = time.perf_counter()
         # print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
@@ -233,7 +233,7 @@ def print_results_end_yolo(seen,dt,save_txt,save_img,save_dir,imgsz,update,weigh
         strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
 @smart_inference_mode()
-def func_a(dt,model,augment,conf_thres,iou_thres,classes,agnostic_nms,max_det):
+def func_a(dt,im,model,augment,conf_thres,iou_thres,classes,agnostic_nms,max_det):
     with dt[0]:
         im = torch.from_numpy(im).to(model.device)
         im = im.half() if model.fp16 else im.float()  # uint8 to fp16/32
