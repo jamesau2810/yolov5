@@ -1,5 +1,5 @@
 # from dronekit import connect, VehicleMode, LocationGlobalRelative, APIException
-# import dronekit_sitl
+import dronekit_sitl
 # import socket
 # try:
 #     import exceptions
@@ -46,8 +46,8 @@ from utils.torch_utils import select_device, smart_inference_mode
 
 # Yolo section
 # pixhawk_path = '/dev/cu.usbmodem141301'
-pixhawk_path = '/dev/ttyACM0'
-
+# pixhawk_path = '/dev/ttyACM0'
+pixhawk_path = '/dev/ttyUSB0'
 
 
 @smart_inference_mode()
