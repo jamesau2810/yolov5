@@ -45,6 +45,9 @@ from utils.torch_utils import select_device, smart_inference_mode
 
 
 # Yolo section
+# pixhawk_path = '/dev/cu.usbmodem141301'
+pixhawk_path = '/dev/ttyACM0'
+
 
 
 @smart_inference_mode()
@@ -79,7 +82,7 @@ def run_yolo_loop(
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
         # dev = usb.core.find(idVendor=0x045e, idProduct=0x028e),
-        serialObj = serial.Serial('/dev/cu.usbmodem141301')
+        serialObj = serial.Serial(pixhawk_path)
         # socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM),
 ):
     source = str(source)
