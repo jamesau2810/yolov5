@@ -230,7 +230,7 @@ def check_location_arrived(vehicle,lat, lon, alt, interval):
 
     while True:
         loc = checklocation(vehicle)
-
+        print("Latitude: ",loc.lat ,", Longtitude: ",loc.lon ,", Altitude: ",loc.relative_alt)
         # Break and return from function just below target altitude.
         if alt_fmla(loc.relative_alt,alt,1) and intv_check(loc.lon,lon,interval) and intv_check(loc.lat,lat,interval):
             print("Reached location")
