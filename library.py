@@ -110,7 +110,7 @@ def compute_direction(vehicle, x, y, x_mid, y_mid):
     res = cmath.rect(np.log10(length), correct_angle)
     x_velo = res.real
     y_velo = res.imag
-    send_ned_velocity(vehicle, x_velo, y_velo, 0, 1)
+    send_int_velocity(vehicle, x_velo, y_velo, 0, 1)
 def stream_location(vehicle):
     # msd_id = mavutil.mavlink.GLOBAL_POSITION_INT
     msd_id = 33
@@ -215,10 +215,14 @@ def intv_check(a,b,intv):
     c = (a >= b-intv) and (a <= b+intv)
     return c
 def alt_fmla(curr_alt,target_alt = 0,mode = 0):
+    ratio  = 0.05
+    scale = 1000
+    min_rat = (1-ratio) *scale
+    max_rat = (1+ratio) * scale
     if mode ==0:
-        return curr_alt >= target_alt * 950
+        return curr_alt >= target_alt * min_rat
     elif mode == 1:
-        return curr_alt >= target_alt * 950 and curr_alt <= target_alt * 1050
+        return curr_alt >= target_alt * min_rat and curr_alt <= target_alt * max_rat
     else:
         print("Error")
         return True
@@ -254,11 +258,10 @@ def waitMessage(vehicle,msgid):
 #         print("Command failed")
 def waypoint(vehicle,latitude,longitude,altitude,hold=10,acptrad=0,passrad=0,yaw = 0):
 
-    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
-                                              mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, hold, acptrad, passrad, yaw, latitude, longitude, altitude )
-
-    vehicle.mav.send(message)
-    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    # message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+                                            #   mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, hold, acptrad, passrad, yaw,  )
+    duration = 0
+    response = send_int_velo_pos_cmd(vehicle,"pos",latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5,duration)
     print(response)
     if response and response.command == mavutil.mavlink.MAV_CMD_NAV_WAYPOINT and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
         print("Command accepted")
@@ -281,24 +284,43 @@ def return_to_launch(vehicle):
         print("Command accepted")
     else:
         print("Command failed")
-
-def send_ned_velocity(vehicle, velocity_x, velocity_y, velocity_z, duration):
+def send_int_velo_pos_cmd(vehicle,type_mask_name,postion_x,postion_y,postion_z, velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate, duration = 0):
+    # pos x:	Latitude * 1e7 pos y: Longitude * 1e7, pos z: alt, velocity_x: m/s, velocity_y: m/s, velocity_z: m/s,accel_x: m/s/s,accel_y: m/s/s,accel_z: m/s/s,
+    type_mask = 0
+    if type_mask_name == "pos":
+        type_mask = int(0b110111111000)# Use position
+    elif type_mask_name == "spd":
+        type_mask = int(0b110111000111)# USe velocity
+    elif type_mask_name == "posspd":
+        type_mask = int(0b110111000000)# USe both
+    else:
+        return
+    
+    # message = mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, vehicle.target_system,
+    #                     vehicle.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, type_mask ,
+    #                     postion_x,postion_y,postion_z,
+    #                     velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
+    #                     )
+    message = mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, vehicle.target_system,
+                        vehicle.target_component, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, type_mask ,
+                        postion_x,postion_y,postion_z,
+                        velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
+                        )
+    vehicle.mav.send(message)
+    return vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+def send_int_velocity(vehicle, velocity_x, velocity_y, velocity_z, duration):
     """
     Move vehicle in direction based on specified velocity vectors.
     """
     # the_connection.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, the_connection.target_system,
 #                         the_connection.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, int(0b010111111000), 40, 0, -10, 0, 0, 0, 0, 0, 0, 1.57, 0.5))
 # 86
-    # type_mask = int(0b110111111000)# Use position
-    type_mask = int(0b110111000111)# USe velocity
-    # type_mask = int(0b110111000000)# USe both
-    message = mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, vehicle.target_system,
-                        vehicle.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, type_mask , 0, 0, 0, 
-                        velocity_x, velocity_y, velocity_z,
-                        0, 0, 0,
-                         1.57, 0.5)
-    vehicle.mav.send(message)
-    vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    
+    # accel_x,accel_y,accel_z,yaw,yaw_rate
+                         
+    response = send_int_velo_pos_cmd(vehicle,"spd", 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,1.57, 0.5,duration)
+    
+    
     # msg = vehicle.message_factory.set_position_target_local_ned_encode(
     #     0,  # time_boot_ms (not used)
     #     0, 0,  # target system, target component

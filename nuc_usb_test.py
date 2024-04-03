@@ -117,11 +117,11 @@ library.waypoint(vehicle,-353628400,1491645380,10)
 library.return_to_launch(vehicle)
 print(library.checklocation(vehicle))
 # library.disarm(vehicle)
-# library.send_ned_velocity(vehicle,0,1,0,10)
+# library.send_int_velocity(vehicle,0,1,0,10)
 #
 # time.sleep(10)
 #
-# library.send_ned_velocity(vehicle,0,0,0,10)
+# library.send_int_velocity(vehicle,0,0,0,10)
 
 # if vehicle.is_armable:
 #     aTargetAltitude = 5
@@ -133,7 +133,7 @@ print(library.checklocation(vehicle))
 #             print("Reached target altitude")
 #             break
 #         time.sleep(1)
-#     library.send_ned_velocity(vehicle,1,0,0,10)
+#     library.send_int_velocity(vehicle,1,0,0,10)
 #     print("End of Script")
 # else:
 #     vehicle = library.arm(vehicle)
