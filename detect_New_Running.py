@@ -75,7 +75,7 @@ def main(opt):
     # cap.set(cv2.CAP_PROP_FRAME_WIDTH, 224)
     # cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 224)
     cap.set(cv2.CAP_PROP_FPS, 36)
-    serialObj = serial.Serial(nuc_usb_test.path)
+    serialObj = serial.Serial(library.pixhawk_path)
     time.sleep(3)
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # library.run_yolo_loop(**vars(opt))
@@ -85,12 +85,14 @@ def main(opt):
         ret, image = cap.read()
         filename = ROOT / 'temp.jpg'
         cv2.imwrite(filename, image)
-        library.run_yolo_loop(
+        xyxy_best,x,y = library.run_yolo_loop(
             weights=ROOT / 'best.pt',
             source=filename,
             source_image= image,
             # dev=dev,
-            serialObj = serialObj)
+            # serialObj = 
+            )
+        library.Box2Send(xyxy_best,serialObj,x,y)
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #     ret, image = cap.read()
     #     filename = ROOT / 'temp.jpg'

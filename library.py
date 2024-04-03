@@ -82,7 +82,7 @@ def run_yolo_loop(
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
         # dev = usb.core.find(idVendor=0x045e, idProduct=0x028e),
-        serialObj = serial.Serial(pixhawk_path)
+        # serialObj = serial.Serial(pixhawk_path)
         # socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM),
 ):
     source = str(source)
@@ -142,6 +142,9 @@ def run_yolo_loop(
         #             writer.writeheader()
         #         writer.writerow(data)
         # Process predictions
+        xyxy_best = []
+        x_point = 0
+        y_point = 0
         for i, det in enumerate(pred):  # per image
             seen += 1
             im0,s_pred_pros = pred_pro_1(webcam,im0s,i)
@@ -161,10 +164,13 @@ def run_yolo_loop(
                 det_New.sort(key=lambda x: x[4])
                 det_best = det_New[0]
                 # if det_best
-                xyxy_best = det_best[:4]
+                xyxy_best_chose = det_best[:4]
                 # Yogesh, start of here
                 x,y =  im.shape[:2]
-                Box2Send(xyxy_best,serialObj,x,y)
+                xyxy_best =  xyxy_best_chose
+                x_point = x
+                y_point = y
+                # Box2Send(xyxy_best,serialObj,x,y)
                 # # Read data from the USB port
                 # data = dev.read(0x81, 1024)
 
@@ -181,7 +187,7 @@ def run_yolo_loop(
             # write_result(det,names,hide_conf,save_csv,write_to_csv,save_txt,gn,save_conf,txt_path,save_img,save_crop,view_img,hide_labels,annotator,imc,save_dir,p)
             # save_result(save_img,dataset,im0,vid_path,vid_writer,vid_cap,i)
     # print_results_end_yolo(seen,dt,save_txt,save_img,save_dir,imgsz,update,weights)
-    return
+    return xyxy_best,x_point,y_point
 
             
 
