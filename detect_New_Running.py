@@ -36,12 +36,12 @@ import sys
 from pathlib import Path
 import cv2
 import numpy as np
-import torch
-import socket
+# import torch
+# import socket
 # import usb.core
 # import usb.util
 import serial
-import nuc_usb_test
+# import nuc_usb_test
 import library
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
@@ -92,7 +92,7 @@ def main(opt):
             # dev=dev,
             # serialObj = 
             )
-        library.Box2Send(xyxy_best,serialObj,x,y)
+        # library.Box2Send(xyxy_best,serialObj,x,y)
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #     ret, image = cap.read()
     #     filename = ROOT / 'temp.jpg'
