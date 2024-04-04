@@ -453,17 +453,7 @@ def arm_disarm_command(vehicle,bit):
         print("Command failed")
     return
 
-def compute_direction(vehicle, x, y, x_mid, y_mid):
-    angle = math.radians(vehicle.heading)
-    xa = x - x_mid
-    ya = y - y_mid
-    cmplx_coor = complex(xa, ya)
-    length, box_angle = cmath.polar(cmplx_coor)
-    correct_angle = (box_angle + angle) % (2 * np.pi)
-    res = cmath.rect(np.log10(length), correct_angle)
-    x_velo = res.real
-    y_velo = res.imag
-    send_int_velocity(vehicle, x_velo, y_velo, 0, 1)
+
 def stream_location(vehicle):
     # msd_id = mavutil.mavlink.GLOBAL_POSITION_INT
     msd_id = 33
@@ -688,9 +678,22 @@ def send_int_velocity(vehicle, velocity_x, velocity_y, velocity_z, duration):
     # for x in range(0, duration):
     #     vehicle.send_mavlink(msg)
     #     time.sleep(1)
+def compute_direction(heading, x, y, x_mid, y_mid):
 
+    angle = math.radians(heading)
+    xa = x - x_mid
+    ya = y - y_mid
+    cmplx_coor = complex(xa, ya)
+    length, box_angle = cmath.polar(cmplx_coor)
+    correct_angle = (box_angle + angle) % (2 * np.pi)
+    # We use log as a speed fmla
+    res = cmath.rect(np.log10(length), correct_angle)
+    x_velo = res.real
+    y_velo = res.imag
+    return x_velo, y_velo
+    # send_int_velocity(vehicle, x_velo, y_velo, 0, 1)
 
-def Box2Send(xyxy_best, serialObj, x, y):
+def Box2Send(xyxy_best, x, y):
     xmin = int(xyxy_best[0])
     ymin = int(xyxy_best[1])
     xmax = int(xyxy_best[2])
@@ -702,15 +705,85 @@ def Box2Send(xyxy_best, serialObj, x, y):
     width_y = int((ymax - ymin) / y)
     # width_x = int(torch.round((xmax-xmin)/ x))
     # width_y = int(torch.round((ymax-ymin)/ y))
-
     left = int(centre_point_x * 100 / x)
     up = int(centre_point_y * 100 / y)
     # left = int(torch.round(centre_point_x*100 / x))#centre_point_x - (x/2)
     # up = int(torch.round(centre_point_y*100 / y))#centre_point_y - (y/2)
-
     # width_x,width_y
     # SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
     # ArduinoSent(left,up,width_x,width_y,serialObj)
     # # Write data to the USB port
     # dev.write(1, b'Hello, World!')
-    # serialObj.write(SendItem.encode('UTF-8')) 
+    # serialObj.write(SendItem.encode('UTF-8'))
+    return left,up,width_x,width_y
+
+def Box2Speed(heading,xyxy_best, x, y):
+    xmin = int(xyxy_best[0])
+    ymin = int(xyxy_best[1])
+    xmax = int(xyxy_best[2])
+    ymax = int(xyxy_best[3])
+    centre_point_x = (xmin + xmax) / 2
+    centre_point_y = (ymin + ymax) / 2
+    # print(type(xmin))
+    width_x = int((xmax - xmin) / x)
+    width_y = int((ymax - ymin) / y)
+    # width_x = int(torch.round((xmax-xmin)/ x))
+    # width_y = int(torch.round((ymax-ymin)/ y))
+    left = int(centre_point_x * 100 / x)
+    up = int(centre_point_y * 100 / y)
+    x_velo, y_velo = compute_direction(heading,left,up,centre_point_x,centre_point_y)
+    # left = int(torch.round(centre_point_x*100 / x))#centre_point_x - (x/2)
+    # up = int(torch.round(centre_point_y*100 / y))#centre_point_y - (y/2)
+    # width_x,width_y
+    # SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
+    # ArduinoSent(left,up,width_x,width_y,serialObj)
+    # # Write data to the USB port
+    # dev.write(1, b'Hello, World!')
+    # serialObj.write(SendItem.encode('UTF-8'))
+    return x_velo, y_velo
+def Box2Send(xyxy_best, x, y):
+    xmin = int(xyxy_best[0])
+    ymin = int(xyxy_best[1])
+    xmax = int(xyxy_best[2])
+    ymax = int(xyxy_best[3])
+    centre_point_x = (xmin + xmax) / 2
+    centre_point_y = (ymin + ymax) / 2
+    # print(type(xmin))
+    width_x = int((xmax - xmin) / x)
+    width_y = int((ymax - ymin) / y)
+    # width_x = int(torch.round((xmax-xmin)/ x))
+    # width_y = int(torch.round((ymax-ymin)/ y))
+    left = int(centre_point_x * 100 / x)
+    up = int(centre_point_y * 100 / y)
+    # left = int(torch.round(centre_point_x*100 / x))#centre_point_x - (x/2)
+    # up = int(torch.round(centre_point_y*100 / y))#centre_point_y - (y/2)
+    # width_x,width_y
+    # SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
+    # ArduinoSent(left,up,width_x,width_y,serialObj)
+    # # Write data to the USB port
+    # dev.write(1, b'Hello, World!')
+    # serialObj.write(SendItem.encode('UTF-8'))
+    return left,up,width_x,width_y
+def Box2Send(xyxy_best,serialObj, x, y):
+    xmin = int(xyxy_best[0])
+    ymin = int(xyxy_best[1])
+    xmax = int(xyxy_best[2])
+    ymax = int(xyxy_best[3])
+    centre_point_x = (xmin + xmax) / 2
+    centre_point_y = (ymin + ymax) / 2
+    # print(type(xmin))
+    width_x = int((xmax - xmin) / x)
+    width_y = int((ymax - ymin) / y)
+    # width_x = int(torch.round((xmax-xmin)/ x))
+    # width_y = int(torch.round((ymax-ymin)/ y))
+    left = int(centre_point_x * 100 / x)
+    up = int(centre_point_y * 100 / y)
+    # left = int(torch.round(centre_point_x*100 / x))#centre_point_x - (x/2)
+    # up = int(torch.round(centre_point_y*100 / y))#centre_point_y - (y/2)
+    # width_x,width_y
+    # SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
+    ArduinoSent(left,up,width_x,width_y,serialObj)
+    # # Write data to the USB port
+    # dev.write(1, b'Hello, World!')
+    # serialObj.write(SendItem.encode('UTF-8'))
+    return left,up,width_x,width_y
