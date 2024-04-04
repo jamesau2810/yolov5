@@ -110,7 +110,7 @@ def main(opt):
         if have_result:
             loc = library.checklocation(vehicle)
             velocity_x, velocity_y = library.Box2Speed(loc.hdg,xyxy_best,x,y)
-            library.send_int_velocity(vehicle,velocity_x, velocity_y,0,10)
+            library.send_int_velocity(vehicle,velocity_x, velocity_y,0)
         # time.sleep(1)
         
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:

@@ -121,9 +121,9 @@ def run_yolo_loop(
     model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
     seen, windows, dt = 0, [], (Profile(device=device), Profile(device=device), Profile(device=device))
     have_result = False
-    xyxy_best = [0,0,0,0]
-    x_point = 0
-    y_point = 0
+    xyxy_best = [25,25,75,75]
+    x_point = 100
+    y_point = 100
     for path1, im, im0s, vid_cap, s in dataset:
         # path = path1
 
@@ -605,8 +605,8 @@ def waypoint(vehicle,latitude,longitude,altitude,hold=10,acptrad=0,passrad=0,yaw
 
     # message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
                                             #   mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, hold, acptrad, passrad, yaw,  )
-    duration = 0
-    response = send_int_velo_pos_cmd(vehicle,"pos",latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5,duration)
+
+    response = send_int_velo_pos_cmd(vehicle,"pos",latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
     print(response)
     if response and response.command == mavutil.mavlink.MAV_CMD_NAV_WAYPOINT and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
         print("Command accepted")
@@ -629,7 +629,7 @@ def return_to_launch(vehicle):
         print("Command accepted")
     else:
         print("Command failed")
-def send_int_velo_pos_cmd(vehicle,type_mask_name,postion_x,postion_y,postion_z, velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate, duration = 0):
+def send_int_velo_pos_cmd(vehicle,type_mask_name,postion_x,postion_y,postion_z, velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate):
     # pos x:	Latitude * 1e7 pos y: Longitude * 1e7, pos z: alt, velocity_x: m/s, velocity_y: m/s, velocity_z: m/s,accel_x: m/s/s,accel_y: m/s/s,accel_z: m/s/s,
     type_mask = 0
     if type_mask_name == "pos":
@@ -653,7 +653,7 @@ def send_int_velo_pos_cmd(vehicle,type_mask_name,postion_x,postion_y,postion_z, 
                         )
     vehicle.mav.send(message)
     return vehicle.recv_match(type='COMMAND_ACK', blocking=True)
-def send_int_velocity(vehicle, velocity_x, velocity_y, velocity_z, duration):
+def send_int_velocity(vehicle, velocity_x, velocity_y, velocity_z):
     """
     Move vehicle in direction based on specified velocity vectors.
     """
@@ -661,11 +661,9 @@ def send_int_velocity(vehicle, velocity_x, velocity_y, velocity_z, duration):
 #                         the_connection.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, int(0b010111111000), 40, 0, -10, 0, 0, 0, 0, 0, 0, 1.57, 0.5))
 # 86
     
-    # accel_x,accel_y,accel_z,yaw,yaw_rate
-                         
-    response = send_int_velo_pos_cmd(vehicle,"spd", 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,1.57, 0.5,duration)
-    
-    
+    # accel_x,accel_y,accel_z,yaw,yaw_rate                    
+    response = send_int_velo_pos_cmd(vehicle,"spd", 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,1.57, 0.5)
+    print(response)
     # msg = vehicle.message_factory.set_position_target_local_ned_encode(
     #     0,  # time_boot_ms (not used)
     #     0, 0,  # target system, target component
@@ -693,7 +691,7 @@ def compute_direction(heading, x, y, x_mid, y_mid):
     x_velo = res.real
     y_velo = res.imag
     return x_velo, y_velo
-    # send_int_velocity(vehicle, x_velo, y_velo, 0, 1)
+    # send_int_velocity(vehicle, x_velo, y_velo, 0)
 
 def Box2Send(xyxy_best, x, y):
     xmin = int(xyxy_best[0])
