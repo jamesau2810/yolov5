@@ -123,7 +123,7 @@ def run_yolo_loop(
     for path1, im, im0s, vid_cap, s in dataset:
         # path = path1
 
-        pred = func_a(dt,im,model,augment,conf_thres,iou_thres,classes,agnostic_nms,max_det)
+        im,pred = func_a(dt,im,model,augment,conf_thres,iou_thres,classes,agnostic_nms,max_det)
 
         # toc = time.perf_counter()
         # print(f"Downloaded the tutorial in {toc - tic:0.4f} seconds")
@@ -261,7 +261,7 @@ def func_a(dt,im,model,augment,conf_thres,iou_thres,classes,agnostic_nms,max_det
     # NMS
     with dt[2]:
         pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=max_det)
-    return pred
+    return im,pred
 @smart_inference_mode()
 def print_result_yolo(det,names):
     s = ""
