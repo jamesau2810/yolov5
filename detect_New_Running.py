@@ -85,7 +85,7 @@ def main(opt):
         ret, image = cap.read()
         filename = ROOT / 'temp.jpg'
         cv2.imwrite(filename, image)
-        xyxy_best,x,y = library.run_yolo_loop(
+        have_result,xyxy_best,x,y = library.run_yolo_loop(
             weights=ROOT / 'best.pt',
             source=filename,
             source_image= image,

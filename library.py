@@ -120,6 +120,10 @@ def run_yolo_loop(
     # Run inference
     model.warmup(imgsz=(1 if pt or model.triton else bs, 3, *imgsz))  # warmup
     seen, windows, dt = 0, [], (Profile(device=device), Profile(device=device), Profile(device=device))
+    have_result = False
+    xyxy_best = [0,0,0,0]
+    x_point = 0
+    y_point = 0
     for path1, im, im0s, vid_cap, s in dataset:
         # path = path1
 
@@ -142,9 +146,6 @@ def run_yolo_loop(
         #             writer.writeheader()
         #         writer.writerow(data)
         # Process predictions
-        xyxy_best = []
-        x_point = 0
-        y_point = 0
         for i, det in enumerate(pred):  # per image
             seen += 1
             im0,s_pred_pros = pred_pro_1(webcam,im0s,i)
@@ -167,6 +168,7 @@ def run_yolo_loop(
                 xyxy_best_chose = det_best[:4]
                 # Yogesh, start of here
                 x,y =  im.shape[:2]
+                have_result = True
                 xyxy_best =  xyxy_best_chose
                 x_point = x
                 y_point = y
@@ -187,9 +189,9 @@ def run_yolo_loop(
             # write_result(det,names,hide_conf,save_csv,write_to_csv,save_txt,gn,save_conf,txt_path,save_img,save_crop,view_img,hide_labels,annotator,imc,save_dir,p)
             # save_result(save_img,dataset,im0,vid_path,vid_writer,vid_cap,i)
     # print_results_end_yolo(seen,dt,save_txt,save_img,save_dir,imgsz,update,weights)
-    return xyxy_best,x_point,y_point
+    return have_result,xyxy_best,x_point,y_point
 
-            
+
 
 # end method
 @smart_inference_mode()

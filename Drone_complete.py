@@ -105,15 +105,14 @@ def main(opt):
         ret, image = cap.read()
         filename = ROOT / 'temp.jpg'
         cv2.imwrite(filename, image)
-        xyxy_best,x,y = library.run_yolo_loop(
-            weights=ROOT / 'best.pt',
-            source=filename,
-            source_image= image,
-            # dev=dev,
-            )
-        loc = library.checklocation(vehicle)
-        velocity_x, velocity_y = library.Box2Speed(loc.hdg,xyxy_best,x,y)
-        library.send_int_velocity(vehicle,velocity_x, velocity_y,0,10)
+        have_result,xyxy_best,x,y = library.run_yolo_loop(weights=ROOT / 'best.pt',source=filename,source_image= image)
+        # dev=dev,
+        if have_result:
+            loc = library.checklocation(vehicle)
+            velocity_x, velocity_y = library.Box2Speed(loc.hdg,xyxy_best,x,y)
+            library.send_int_velocity(vehicle,velocity_x, velocity_y,0,10)
+        # time.sleep(1)
+        
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #     ret, image = cap.read()
     #     filename = ROOT / 'temp.jpg'
