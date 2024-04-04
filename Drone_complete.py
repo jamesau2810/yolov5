@@ -111,7 +111,8 @@ def main(opt):
             source_image= image,
             # dev=dev,
             )
-        velocity_x, velocity_y = library.Box2Speed(vehicle.heading,xyxy_best,x,y)
+        loc = library.checklocation(vehicle)
+        velocity_x, velocity_y = library.Box2Speed(loc.hdg,xyxy_best,x,y)
         library.send_int_velocity(vehicle,velocity_x, velocity_y,0,10)
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #     ret, image = cap.read()
