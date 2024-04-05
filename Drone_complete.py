@@ -100,7 +100,8 @@ def main(opt):
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # library.run_yolo_loop(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-
+    time_stamping = 0
+    velocity_x, velocity_y = 0,0
     while True:
         ret, image = cap.read()
         filename = ROOT / 'temp.jpg'
@@ -110,6 +111,9 @@ def main(opt):
         if have_result:
             loc = library.checklocation(vehicle)
             velocity_x, velocity_y = library.Box2Speed(loc.hdg,xyxy_best,x,y)
+            library.send_int_velocity(vehicle,velocity_x, velocity_y,0)
+            time_stamping = time.time()
+        if  time.time()>= time_stamping + 2:
             library.send_int_velocity(vehicle,velocity_x, velocity_y,0)
         # time.sleep(1)
         
