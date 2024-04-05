@@ -606,16 +606,16 @@ def waypoint(vehicle,latitude,longitude,altitude,hold=10,acptrad=0,passrad=0,yaw
 
     # message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
                                             #   mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, hold, acptrad, passrad, yaw,  )
-
-    response = send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
-    print(response)
-    if response and response.command == mavutil.mavlink.MAV_CMD_NAV_WAYPOINT and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
-        print("Command accepted")
-        check_location_arrived(vehicle,latitude,longitude,altitude,20)
-        return
-    else:
-        print("Command failed")
-        return
+    send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
+    # response = send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
+    # print(response)
+    # if response and response.command == mavutil.mavlink.MAV_CMD_NAV_WAYPOINT and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+    #     print("Command accepted")
+    #     check_location_arrived(vehicle,latitude,longitude,altitude,20)
+    #     return
+    # else:
+    #     print("Command failed")
+    #     return
 
 def return_to_launch(vehicle):
     # Auto return to launch position
@@ -642,20 +642,26 @@ def send_int_velo_pos_cmd(vehicle,type_mask_name,postion_x,postion_y,postion_z, 
         type_mask = int(0b110111000000)# USe both
     else:
         return
-    
     # message = mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, vehicle.target_system,
     #                     vehicle.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, type_mask ,
     #                     postion_x,postion_y,postion_z,
     #                     velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
     #                     )
     # SET_POSITION_TARGET_GLOBAL_INT
-    message = mavutil.mavlink.set_position_target_global_int_send(10, vehicle.target_system,
+    # message = mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, vehicle.target_system,
+    #                     vehicle.target_component, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, type_mask ,
+    #                     postion_x,postion_y,postion_z,
+    #                     velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
+    #                     )
+    # vehicle.mav.send(message)
+    mavutil.mav.set_position_target_global_int_send(10, vehicle.target_system,
                         vehicle.target_component, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, type_mask ,
                         postion_x,postion_y,postion_z,
                         velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
                         )
-    vehicle.mav.send(message)
-    return vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    return
+    # return vehicle.recv_match(type='SYS_STATUS', blocking=True)
+    # return vehicle.recv_match(type='COMMAND_ACK', blocking=True)
 def send_int_velocity(vehicle, velocity_x, velocity_y, velocity_z):
     """
     Move vehicle in direction based on specified velocity vectors.
@@ -664,9 +670,10 @@ def send_int_velocity(vehicle, velocity_x, velocity_y, velocity_z):
     #           the_connection.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, int(0b010111111000), 40, 0, -10, 0, 0, 0, 0, 0, 0, 1.57, 0.5))
     # 86
     
-    # accel_x,accel_y,accel_z,yaw,yaw_rate                    
-    response = send_int_velo_pos_cmd(vehicle,1, 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,0, 0)
-    print(response)
+    # accel_x,accel_y,accel_z,yaw,yaw_rate
+    send_int_velo_pos_cmd(vehicle,1, 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,0, 0)
+    # response = send_int_velo_pos_cmd(vehicle,1, 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,0, 0)
+    # print(response)
     # msg = vehicle.message_factory.set_position_target_local_ned_encode(
     #     0,  # time_boot_ms (not used)
     #     0, 0,  # target system, target component
