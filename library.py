@@ -512,6 +512,7 @@ def printStatus(vehicle):
     print("Armed: %s" % vehicle.armed)  # settable
 
 def set_mode(vehicle,mode):
+    # https://ardupilot.org/copter/docs/parameters.html#fltmode1-flight-mode-1
     # Not working
     mode_dict = {"GUIDED":4,"STABILIZE":0,"AUTO":3}
     mode_num = mode_dict[mode]
@@ -654,7 +655,8 @@ def send_int_velo_pos_cmd(vehicle,type_mask_name,postion_x,postion_y,postion_z, 
     #                     velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
     #                     )
     # vehicle.mav.send(message)
-    mavutil.mav.set_position_target_global_int_send(10, vehicle.target_system,
+    # https://mavlink.io/zh/mavgen_python/
+    vehicle.mav.set_position_target_global_int_send(10, vehicle.target_system,
                         vehicle.target_component, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, type_mask ,
                         postion_x,postion_y,postion_z,
                         velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
