@@ -606,7 +606,7 @@ def waypoint(vehicle,latitude,longitude,altitude,hold=10,acptrad=0,passrad=0,yaw
     # message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
                                             #   mavutil.mavlink.MAV_CMD_NAV_WAYPOINT, 0, hold, acptrad, passrad, yaw,  )
 
-    response = send_int_velo_pos_cmd(vehicle,"pos",latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
+    response = send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
     print(response)
     if response and response.command == mavutil.mavlink.MAV_CMD_NAV_WAYPOINT and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
         print("Command accepted")
@@ -632,11 +632,11 @@ def return_to_launch(vehicle):
 def send_int_velo_pos_cmd(vehicle,type_mask_name,postion_x,postion_y,postion_z, velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate):
     # pos x:	Latitude * 1e7 pos y: Longitude * 1e7, pos z: alt, velocity_x: m/s, velocity_y: m/s, velocity_z: m/s,accel_x: m/s/s,accel_y: m/s/s,accel_z: m/s/s,
     type_mask = 0
-    if type_mask_name == "pos":
+    if type_mask_name == 0:
         type_mask = int(0b110111111000)# Use position
-    elif type_mask_name == "spd":
+    elif type_mask_name == 1:
         type_mask = int(0b110111000111)# USe velocity
-    elif type_mask_name == "posspd":
+    elif type_mask_name == 2:
         type_mask = int(0b110111000000)# USe both
     else:
         return
@@ -662,7 +662,7 @@ def send_int_velocity(vehicle, velocity_x, velocity_y, velocity_z):
 # 86
     
     # accel_x,accel_y,accel_z,yaw,yaw_rate                    
-    response = send_int_velo_pos_cmd(vehicle,"spd", 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,1.57, 0.5)
+    response = send_int_velo_pos_cmd(vehicle,1, 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,1.57, 0.5)
     print(response)
     # msg = vehicle.message_factory.set_position_target_local_ned_encode(
     #     0,  # time_boot_ms (not used)
