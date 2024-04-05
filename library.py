@@ -658,11 +658,11 @@ def send_int_velocity(vehicle, velocity_x, velocity_y, velocity_z):
     Move vehicle in direction based on specified velocity vectors.
     """
     # the_connection.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, the_connection.target_system,
-#                         the_connection.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, int(0b010111111000), 40, 0, -10, 0, 0, 0, 0, 0, 0, 1.57, 0.5))
-# 86
+    #           the_connection.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, int(0b010111111000), 40, 0, -10, 0, 0, 0, 0, 0, 0, 1.57, 0.5))
+    # 86
     
     # accel_x,accel_y,accel_z,yaw,yaw_rate                    
-    response = send_int_velo_pos_cmd(vehicle,1, 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,1.57, 0.5)
+    response = send_int_velo_pos_cmd(vehicle,1, 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,0, 0)
     print(response)
     # msg = vehicle.message_factory.set_position_target_local_ned_encode(
     #     0,  # time_boot_ms (not used)

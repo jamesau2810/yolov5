@@ -106,12 +106,17 @@ def main(opt):
         ret, image = cap.read()
         filename = ROOT / 'temp.jpg'
         cv2.imwrite(filename, image)
+        print("a")
         have_result,xyxy_best,x,y = library.run_yolo_loop(weights=ROOT / 'best.pt',source=filename,source_image= image)
         # dev=dev,
         if have_result:
+            print("b")
             loc = library.checklocation(vehicle)
+            print("c")
             velocity_x, velocity_y = library.Box2Speed(loc.hdg,xyxy_best,x,y)
+            print("d")
             library.send_int_velocity(vehicle,velocity_x, velocity_y,0)
+            print("e")
             time_stamping = time.time()
         if  time.time()>= time_stamping + 2:
             library.send_int_velocity(vehicle,velocity_x, velocity_y,0)
