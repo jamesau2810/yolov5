@@ -513,7 +513,7 @@ def printStatus(vehicle):
 
 def set_mode(vehicle,mode):
     # Not working
-    mode_dict = {"GUIDED":216,"STABILIZE":208,"AUTO":220}
+    mode_dict = {"GUIDED":4,"STABILIZE":0,"AUTO":3}
     mode_num = mode_dict[mode]
     vehicle.set_mode( mode_num, custom_mode = 0, custom_sub_mode = 0)
     # message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
