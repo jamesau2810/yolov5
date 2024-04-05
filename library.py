@@ -515,10 +515,11 @@ def set_mode(vehicle,mode):
     # Not working
     mode_dict = {"GUIDED":216,"STABILIZE":208,"AUTO":220}
     mode_num = mode_dict[mode]
-    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
-                                              mavutil.mavlink.MAV_CMD_DO_SET_MODE, 0, mode_num, 0, 0, 0, 0, 0, 0)
+    vehicle.set_mode( mode_num, custom_mode = 0, custom_sub_mode = 0)
+    # message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+    #                                           mavutil.mavlink.MAV_CMD_DO_SET_MODE, 0, mode_num, 0, 0, 0, 0, 0, 0)
 
-    vehicle.mav.send(message)
+    # vehicle.mav.send(message)
     response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
     print(response)
     if response and response.command == mavutil.mavlink.MAV_CMD_DO_SET_MODE and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
@@ -629,6 +630,7 @@ def return_to_launch(vehicle):
         print("Command accepted")
     else:
         print("Command failed")
+# To be fixed
 def send_int_velo_pos_cmd(vehicle,type_mask_name,postion_x,postion_y,postion_z, velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate):
     # pos x:	Latitude * 1e7 pos y: Longitude * 1e7, pos z: alt, velocity_x: m/s, velocity_y: m/s, velocity_z: m/s,accel_x: m/s/s,accel_y: m/s/s,accel_z: m/s/s,
     type_mask = 0
@@ -646,7 +648,8 @@ def send_int_velo_pos_cmd(vehicle,type_mask_name,postion_x,postion_y,postion_z, 
     #                     postion_x,postion_y,postion_z,
     #                     velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
     #                     )
-    message = mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, vehicle.target_system,
+    # SET_POSITION_TARGET_GLOBAL_INT
+    message = mavutil.mavlink.set_position_target_global_int_send(10, vehicle.target_system,
                         vehicle.target_component, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, type_mask ,
                         postion_x,postion_y,postion_z,
                         velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate

@@ -100,6 +100,7 @@ vehicle = library.connectMyCopter()
 # modeUsed = "STABILIZE"
 modeUsed = "GUIDED"
 # modeUsed = "AUTO"
+vehicle.set
 vehicle.mode = VehicleMode(modeUsed)
 
 
@@ -110,7 +111,7 @@ ori_loc = vehicle.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
 offset = ori_loc.alt
 print(ori_loc)
 
-# library.set_mode(vehicle,modeUsed)
+library.set_mode(vehicle,modeUsed)
 print(library.checklocation(vehicle))
 library.takeoff(vehicle,10)
 library.waypoint(vehicle,-353628400,1491645380,10)
