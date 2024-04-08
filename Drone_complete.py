@@ -72,6 +72,7 @@ def main(opt):
     modeUsed = "GUIDED"
     # modeUsed = "AUTO"
     vehicle.mode = VehicleMode(modeUsed)
+    library.set_mode(vehicle,modeUsed)
 
 
     #
@@ -118,6 +119,8 @@ def main(opt):
             library.send_int_velocity(vehicle,velocity_x, velocity_y,0)
             print("e")
             time_stamping = time.time()
+        else:
+            library.send_int_velocity(vehicle,0, 0,0)
         if  time.time()>= time_stamping + 2:
             library.send_int_velocity(vehicle,velocity_x, velocity_y,0)
         # time.sleep(1)
