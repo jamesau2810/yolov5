@@ -605,20 +605,22 @@ def waitMessage(vehicle,msgid):
 #         print("Command failed")
 def waypoint(vehicle,latitude,longitude,altitude,hold=10,acptrad=0,passrad=0,yaw = 0):
 
-    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
-                                              mavutil.mavlink.MAV_CMD_NAV_LOITER_UNLIM, 0,0,0 , passrad, yaw,latitude,longitude,altitude  )
-    # send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5) hold, acptrad
-    vehicle.mav.send(message)
+    # message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+    #                                           mavutil.mavlink.MAV_CMD_NAV_LOITER_UNLIM, 0,0,0 , passrad, yaw,latitude,longitude,altitude  )
+    send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5) #hold, acptrad
+    # vehicle.mav.send(message)
     # response = send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
-    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    # response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
     # print(response)
-    if response and response.command == mavutil.mavlink.MAV_CMD_NAV_LOITER_UNLIM and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
-        print("Command accepted")
-        check_location_arrived(vehicle,latitude,longitude,altitude,20)
-        return
-    else:
-        print("Command failed")
-        return
+    check_location_arrived(vehicle,latitude,longitude,altitude,20)
+    return
+    # if response and response.command == mavutil.mavlink.MAV_CMD_NAV_LOITER_UNLIM and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+    #     print("Command accepted")
+    #     check_location_arrived(vehicle,latitude,longitude,altitude,20)
+    #     return
+    # else:
+    #     print("Command failed")
+    #     return
 
 def return_to_launch(vehicle):
     # Auto return to launch position
