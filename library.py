@@ -448,6 +448,14 @@ def printStatus(vehicle):
 def deploy_tube():
     return
 
+def waypoint_file_read(filePath):
+    db =open(filePath)
+    myline = db.readlines()
+    dataLine = myline[1:]
+    words = [i.rstrip("\n").split("\t")  for i in dataLine]
+    points = [{"point":int(i[0]),"latitude":float(i[8]),"longitude":float(i[9]),"altitude":float(i[10])}  for i in words if int(i[3])==16]
+
+    return words,points
 
 # Support Math Equation
 
