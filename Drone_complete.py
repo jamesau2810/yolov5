@@ -97,11 +97,11 @@ def main(opt):
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # library.run_yolo_loop(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-    library.Helipad_track(vehicle,cap,weightPath = ROOT / 'best.pt')
+    # library.Helipad_track(vehicle,cap,weightPath = ROOT / 'best.pt')
     # library.Helipad_Track_Land(vehicle,cap,weightPath = ROOT / 'best.pt')
     xf = []
     library.SurveyScan_with_stop(vehicle,xf,cap,ROOT / 'best.pt')
-    library.SurveyScan(vehicle,xf,cap,ROOT / 'best.pt')
+    # library.SurveyScan(vehicle,xf,cap,ROOT / 'best.pt')
 
 
 if __name__ == '__main__':
