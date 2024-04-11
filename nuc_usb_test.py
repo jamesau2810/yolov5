@@ -102,17 +102,15 @@ modeUsed = "GUIDED"
 # modeUsed = "AUTO"
 # vehicle.set
 vehicle.mode = VehicleMode(modeUsed)
-library.set_mode(vehicle,modeUsed)
+library.instr_2_takeoff(vehicle,modeUsed)
+
 
 #
-library.arm(vehicle)
-library.stream_location(vehicle)
-ori_loc = vehicle.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
-offset = ori_loc.alt
-print(ori_loc)
+
+
+
 
 # print(library.checklocation(vehicle))
-library.takeoff(vehicle,10)
 library.waypoint(vehicle,-353628400,1491645380,10)
 # library.send_int_velocity(vehicle,0,1,0)
 # time.sleep(3)

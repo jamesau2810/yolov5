@@ -92,7 +92,7 @@ def main(opt):
             # dev=dev,
             # serialObj = 
             )
-        # library.Box2Send(xyxy_best,serialObj,x,y)
+        # library.Box2Send(xyxy_best,x,y,serialObj)
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #     ret, image = cap.read()
     #     filename = ROOT / 'temp.jpg'

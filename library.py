@@ -1,5 +1,5 @@
 # from dronekit import connect, VehicleMode, LocationGlobalRelative, APIException
-import dronekit_sitl
+# import dronekit_sitl
 # import socket
 # try:
 #     import exceptions
@@ -93,7 +93,6 @@ def run_yolo_loop(
     screenshot = source.lower().startswith('screen')
     if is_url and is_file:
         source = check_file(source)  # download
-
     # Directories
     # save_dir = increment_path(Path(project) / name, exist_ok=exist_ok)  # increment run
     # (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
@@ -369,7 +368,30 @@ def parse_opt():
 
 
 # Nuc Pixhawk Section
+def capture_and_yolo_read(cap,weightpath):
+    ret, image = cap.read()
+    filename = ROOT / 'temp.jpg'
+    cv2.imwrite(filename, image)
+    print("a")
+    have_result,xyxy_best,x,y = run_yolo_loop(weights=weightpath,source=filename,source_image= image)
+    return have_result,xyxy_best,x,y
 
+
+def instr_2_takeoff(vehicle,modeUsed):
+    
+    set_mode(vehicle,modeUsed)
+
+
+    #
+    arm(vehicle)
+    stream_location(vehicle)
+    ori_loc = vehicle.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
+    offset = ori_loc.alt
+    print(ori_loc)
+
+    # library.set_mode(vehicle,modeUsed)
+    print(checklocation(vehicle))
+    takeoff(vehicle,10)
 
 def ArduinoSent(left, up, width_x, width_y, serialObj):
     SendItem = '{0:0=3d}'.format(left) + '{0:0=3d}'.format(up) + '{0:0=3d}'.format(width_x) + '{0:0=3d}'.format(width_y)
@@ -528,23 +550,7 @@ def set_mode(vehicle,mode):
     else:
         print("Command failed")
 
-def takeoff(vehicle,altitude ):
-    original_loc = checklocation(vehicle)
-    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
-                                              mavutil.mavlink.MAV_CMD_NAV_TAKEOFF, 0, 1, 0, 0, 0, 0, 0, altitude)
 
-    vehicle.mav.send(message)
-    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
-    print(response)
-    # print(vehicle.recv_match(type='SYS_STATUS', blocking=True))
-    if response and response.command == mavutil.mavlink.MAV_CMD_NAV_TAKEOFF and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
-        print("Command accepted")
-        check_alt_arrived(vehicle,original_loc,altitude)
-        return
-    else:
-        print("Command failed")
-        return
-    
 def checklocation(vehicle):
     # response = waitMessage(vehicle,33)
     return vehicle.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
@@ -603,97 +609,64 @@ def waitMessage(vehicle,msgid):
 #         print("Command accepted")
 #     else:
 #         print("Command failed")
-def waypoint(vehicle,latitude,longitude,altitude,hold=10,acptrad=0,passrad=0,yaw = 0):
-
-    # message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
-    #                                           mavutil.mavlink.MAV_CMD_NAV_LOITER_UNLIM, 0,0,0 , passrad, yaw,latitude,longitude,altitude  )
-    send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5) #hold, acptrad
-    # vehicle.mav.send(message)
-    # response = send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
-    # response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
-    # print(response)
-    check_location_arrived(vehicle,latitude,longitude,altitude,20)
+def deploy_tube():
     return
-    # if response and response.command == mavutil.mavlink.MAV_CMD_NAV_LOITER_UNLIM and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
-    #     print("Command accepted")
-    #     check_location_arrived(vehicle,latitude,longitude,altitude,20)
-    #     return
-    # else:
-    #     print("Command failed")
-    #     return
-
-def return_to_launch(vehicle):
-    # Auto return to launch position
-    # At a cost of being change to RTL mode
-    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
-                                              mavutil.mavlink.MAV_CMD_NAV_RETURN_TO_LAUNCH, 0, 0, 0, 0, 0, 0, 0, 0)
-
-    vehicle.mav.send(message)
-    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
-    print(response)
-    if response and response.command == mavutil.mavlink.MAV_CMD_NAV_RETURN_TO_LAUNCH and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
-        print("Command accepted")
-    else:
-        print("Command failed")
-# To be fixed
-def send_int_velo_pos_cmd(vehicle,type_mask_name,postion_x,postion_y,postion_z, velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate):
-    # pos x:	Latitude * 1e7 pos y: Longitude * 1e7, pos z: alt, velocity_x: m/s, velocity_y: m/s, velocity_z: m/s,accel_x: m/s/s,accel_y: m/s/s,accel_z: m/s/s,
-    type_mask = 0
-    if type_mask_name == 0:
-        type_mask = int(0b110111111000)# Use position
-    elif type_mask_name == 1:
-        type_mask = int(0b110111000111)# USe velocity
-    elif type_mask_name == 2:
-        type_mask = int(0b110111000000)# USe both
-    else:
+def SurveyScan_with_stop(vehicle,waypoints,cap,weightPath):
+    result = SurveyScan_with_stop_Loop(vehicle,waypoints,cap,weightPath)
+    if result:
+        loc = checklocation(vehicle)
+        print("Deploy tube")
+        deploy_tube()
         return
-    # message = mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, vehicle.target_system,
-    #                     vehicle.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, type_mask ,
-    #                     postion_x,postion_y,postion_z,
-    #                     velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
-    #                     )
-    # SET_POSITION_TARGET_GLOBAL_INT
-    # message = mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, vehicle.target_system,
-    #                     vehicle.target_component, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, type_mask ,
-    #                     postion_x,postion_y,postion_z,
-    #                     velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
-    #                     )
-    # vehicle.mav.send(message)
-    # https://mavlink.io/zh/mavgen_python/
-    vehicle.mav.set_position_target_global_int_send(10, vehicle.target_system,
-                        vehicle.target_component, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, type_mask ,
-                        postion_x,postion_y,postion_z,
-                        velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
-                        )
-    return
-    # return vehicle.recv_match(type='SYS_STATUS', blocking=True)
-    # return vehicle.recv_match(type='COMMAND_ACK', blocking=True)
-def send_int_velocity(vehicle, velocity_x, velocity_y, velocity_z):
-    """
-    Move vehicle in direction based on specified velocity vectors.
-    """
-    # the_connection.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, the_connection.target_system,
-    #           the_connection.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, int(0b010111111000), 40, 0, -10, 0, 0, 0, 0, 0, 0, 1.57, 0.5))
-    # 86
-    
-    # accel_x,accel_y,accel_z,yaw,yaw_rate
-    send_int_velo_pos_cmd(vehicle,1, 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,0, 0)
-    # response = send_int_velo_pos_cmd(vehicle,1, 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,0, 0)
-    # print(response)
-    # msg = vehicle.message_factory.set_position_target_local_ned_encode(
-    #     0,  # time_boot_ms (not used)
-    #     0, 0,  # target system, target component
-    #     mavutil.mavlink.MAV_FRAME_LOCAL_NED,  # frame
-    #     0b0000111111000111,  # type_mask (only speeds enabled)
-    #     0, 0, 0,  # x, y, z positions (not used)
-    #     velocity_x, velocity_y, velocity_z,  # x, y, z velocity in m/s
-    #     0, 0, 0,  # x, y, z acceleration (not supported yet, ignored in GCS_Mavlink)
-    #     0, 0)  # yaw, yaw_rate (not supported yet, ignored in GCS_Mavlink)
-    # # vehicle.
-    # # send command to vehicle on 1 Hz cycle
-    # for x in range(0, duration):
-    #     vehicle.send_mavlink(msg)
-    #     time.sleep(1)
+def SurveyScan_with_stop_Loop(vehicle,waypoints,cap,weightPath):
+    for i in waypoints:
+        path_scan_result = waypoint_with_scan_stop(vehicle,i.latitude,i.longitude,i.altitude,cap,weightPath,hold=10,acptrad=0,passrad=0,yaw = 0)
+        if path_scan_result:
+            return True
+    return False
+def waypoint_with_scan_stop(vehicle,latitude,longitude,altitude,cap,weightPath,hold=10,acptrad=0,passrad=0,yaw = 0):
+    send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
+    interval =2
+    while True:
+        loc = checklocation(vehicle)
+        print("Latitude: ",loc.lat ,", Longtitude: ",loc.lon ,", Altitude: ",loc.relative_alt)
+        # Break and return from function just below target altitude.
+        if alt_fmla(loc.relative_alt,altitude,1) and intv_check(loc.lon,longitude,interval) and intv_check(loc.lat,latitude,interval):
+            print("Reached location")
+            return False
+        else:
+            have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath)
+            if have_result:
+                # loc = checklocation(vehicle)
+                return True
+        time.sleep(1)
+def SurveyScan(vehicle,waypoints,cap,weightPath):
+    scan_location_list = []
+    for i in waypoints:
+        path_scan_list = waypoint_with_scan(vehicle,i.latitude,i.longitude,i.altitude,cap,weightPath,hold=10,acptrad=0,passrad=0,yaw = 0)
+        scan_location_list.append(path_scan_list)
+    return scan_location_list
+def waypoint_with_scan(vehicle,latitude,longitude,altitude,cap,weightPath,hold=10,acptrad=0,passrad=0,yaw = 0):
+    Scan_Location_List = []
+    send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
+    interval =2
+    while True:
+        loc = checklocation(vehicle)
+        print("Latitude: ",loc.lat ,", Longtitude: ",loc.lon ,", Altitude: ",loc.relative_alt)
+        # Break and return from function just below target altitude.
+        if alt_fmla(loc.relative_alt,altitude,1) and intv_check(loc.lon,longitude,interval) and intv_check(loc.lat,latitude,interval):
+            print("Reached location")
+            break
+        else:
+            have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath)
+            if have_result:
+                loc = checklocation(vehicle)
+                Scan_Location_List.append(loc)
+        time.sleep(1)
+    return Scan_Location_List
+
+
+
 def compute_direction(heading, x, y, x_mid, y_mid):
 
     angle = math.radians(heading)
@@ -757,7 +730,8 @@ def Box2Speed(heading,xyxy_best, x, y):
     # dev.write(1, b'Hello, World!')
     # serialObj.write(SendItem.encode('UTF-8'))
     return x_velo, y_velo
-def Box2Send(xyxy_best, x, y):
+
+def Box2Speed_Helipad_Land(heading,xyxy_best, x, y):
     xmin = int(xyxy_best[0])
     ymin = int(xyxy_best[1])
     xmax = int(xyxy_best[2])
@@ -765,22 +739,24 @@ def Box2Send(xyxy_best, x, y):
     centre_point_x = (xmin + xmax) / 2
     centre_point_y = (ymin + ymax) / 2
     # print(type(xmin))
-    width_x = int((xmax - xmin) / x)
-    width_y = int((ymax - ymin) / y)
+    width_x = (xmax - xmin)*100 / x
+    width_y = (ymax - ymin)*100 / y
     # width_x = int(torch.round((xmax-xmin)/ x))
     # width_y = int(torch.round((ymax-ymin)/ y))
     left = int(centre_point_x * 100 / x)
     up = int(centre_point_y * 100 / y)
-    # left = int(torch.round(centre_point_x*100 / x))#centre_point_x - (x/2)
-    # up = int(torch.round(centre_point_y*100 / y))#centre_point_y - (y/2)
-    # width_x,width_y
-    # SendItem=str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)
-    # ArduinoSent(left,up,width_x,width_y,serialObj)
-    # # Write data to the USB port
-    # dev.write(1, b'Hello, World!')
-    # serialObj.write(SendItem.encode('UTF-8'))
-    return left,up,width_x,width_y
-def Box2Send(xyxy_best,serialObj, x, y):
+
+    x_velo, y_velo = compute_direction(heading,left,up,centre_point_x,centre_point_y)
+    return x_velo, y_velo, left, up, width_x, width_y
+def Helipad_margin(left, up, width_x,width_y):
+    centre_enough = False
+    close_enough = False
+    if np.abs(left) <= 10 and np.abs(up) <= 10:
+        centre_enough = True
+    if width_x >=80 and  width_y >= 80:
+        close_enough = True
+    return centre_enough, close_enough
+def Box2Send(xyxy_best, x, y ,serialObj):
     xmin = int(xyxy_best[0])
     ymin = int(xyxy_best[1])
     xmax = int(xyxy_best[2])
@@ -803,3 +779,183 @@ def Box2Send(xyxy_best,serialObj, x, y):
     # dev.write(1, b'Hello, World!')
     # serialObj.write(SendItem.encode('UTF-8'))
     return left,up,width_x,width_y
+
+
+def Helipad_Track_Land(vehicle,cap,weightPath):
+    time_stamping = 0
+    velocity_x, velocity_y = 0,0
+    while True:
+        have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath)
+        # dev=dev,
+        if have_result:
+            loc = checklocation(vehicle)
+            velocity_x, velocity_y, left, up, width_x,width_y = Box2Speed(loc.hdg,xyxy_best,x,y)
+            send_int_velocity(vehicle,velocity_x, velocity_y,0)
+            print("run one loop")
+            time_stamping = time.time()
+        else:
+            send_int_velocity(vehicle,0, 0,0)
+        if  time.time()>= time_stamping + 2:
+            send_int_velocity(vehicle,velocity_x, velocity_y,0)
+def Helipad_track(vehicle,cap,weightPath):
+    time_stamping = 0
+    velocity_x, velocity_y = 0,0
+    while True:
+        
+        have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath)
+        # dev=dev,
+        if have_result:
+            loc = checklocation(vehicle)
+            velocity_x, velocity_y = Box2Speed(loc.hdg,xyxy_best,x,y)
+            send_int_velocity(vehicle,velocity_x, velocity_y,0)
+            print("run one loop")
+            time_stamping = time.time()
+        else:
+            send_int_velocity(vehicle,0, 0,0)
+        if  time.time()>= time_stamping + 2:
+            send_int_velocity(vehicle,velocity_x, velocity_y,0)
+        # time.sleep(1)
+
+
+
+
+
+
+#  Copter communication Method
+def takeoff(vehicle,altitude ):
+    original_loc = checklocation(vehicle)
+    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+                                              mavutil.mavlink.MAV_CMD_NAV_TAKEOFF, 0, 1, 0, 0, 0, 0, 0, altitude)
+
+    vehicle.mav.send(message)
+    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    print(response)
+    # print(vehicle.recv_match(type='SYS_STATUS', blocking=True))
+    if response and response.command == mavutil.mavlink.MAV_CMD_NAV_TAKEOFF and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+        print("Command accepted")
+        check_alt_arrived(vehicle,original_loc,altitude)
+        return
+    else:
+        print("Command failed")
+        return
+
+def land(vehicle):
+    altitude = 0
+    original_loc = checklocation(vehicle)
+    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+                                              mavutil.mavlink.MAV_CMD_NAV_LAND, 0, 1, 0, 0, 0, 0, 0, altitude)
+
+    vehicle.mav.send(message)
+    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    print(response)
+    # print(vehicle.recv_match(type='SYS_STATUS', blocking=True))
+    if response and response.command == mavutil.mavlink.MAV_CMD_NAV_LAND and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+        print("Command accepted")
+        while True:
+            loc = checklocation(vehicle)
+            print(" Altitude: ", loc.relative_alt)
+            # Break and return from function just below target altitude.
+            if loc.relative_alt <=0+0.05:
+                print("Reached target altitude")
+                break
+            time.sleep(1)
+        return
+    else:
+        print("Command failed")
+        return
+
+def waypoint(vehicle,latitude,longitude,altitude,hold=10,acptrad=0,passrad=0,yaw = 0):
+
+    # message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+    #                                           mavutil.mavlink.MAV_CMD_NAV_LOITER_UNLIM, 0,0,0 , passrad, yaw,latitude,longitude,altitude  )
+    send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5) #hold, acptrad
+    # vehicle.mav.send(message)
+    # response = send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
+    # response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    # print(response)
+    check_location_arrived(vehicle,latitude,longitude,altitude,20)
+    return
+    # if response and response.command == mavutil.mavlink.MAV_CMD_NAV_LOITER_UNLIM and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+    #     print("Command accepted")
+    #     check_location_arrived(vehicle,latitude,longitude,altitude,20)
+    #     return
+    # else:
+    #     print("Command failed")
+    #     return
+
+def return_to_launch(vehicle):
+    # Auto return to launch position
+    # At a cost of being change to RTL mode
+    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+                                              mavutil.mavlink.MAV_CMD_NAV_RETURN_TO_LAUNCH, 0, 0, 0, 0, 0, 0, 0, 0)
+
+    vehicle.mav.send(message)
+    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    print(response)
+    if response and response.command == mavutil.mavlink.MAV_CMD_NAV_RETURN_TO_LAUNCH and response.result == mavutil.mavlink.MAV_RESULT_ACCEPTED:
+        print("Command accepted")
+    else:
+        print("Command failed")
+# To be fixed
+
+def send_int_velocity(vehicle, velocity_x, velocity_y, velocity_z):
+    """
+    Move vehicle in direction based on specified velocity vectors.
+    """
+    # the_connection.mav.send(mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, the_connection.target_system,
+    #           the_connection.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, int(0b010111111000), 40, 0, -10, 0, 0, 0, 0, 0, 0, 1.57, 0.5))
+    # 86
+    
+    # accel_x,accel_y,accel_z,yaw,yaw_rate
+    send_int_velo_pos_cmd(vehicle,1, 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,0, 0)
+    # response = send_int_velo_pos_cmd(vehicle,1, 0, 0, 0, velocity_x, velocity_y, velocity_z, 0, 0, 0,0, 0)
+    # print(response)
+    # msg = vehicle.message_factory.set_position_target_local_ned_encode(
+    #     0,  # time_boot_ms (not used)
+    #     0, 0,  # target system, target component
+    #     mavutil.mavlink.MAV_FRAME_LOCAL_NED,  # frame
+    #     0b0000111111000111,  # type_mask (only speeds enabled)
+    #     0, 0, 0,  # x, y, z positions (not used)
+    #     velocity_x, velocity_y, velocity_z,  # x, y, z velocity in m/s
+    #     0, 0, 0,  # x, y, z acceleration (not supported yet, ignored in GCS_Mavlink)
+    #     0, 0)  # yaw, yaw_rate (not supported yet, ignored in GCS_Mavlink)
+    # # vehicle.
+    # # send command to vehicle on 1 Hz cycle
+    # for x in range(0, duration):
+    #     vehicle.send_mavlink(msg)
+    #     time.sleep(1)
+
+
+# Copter Command Abstract
+def send_int_velo_pos_cmd(vehicle,type_mask_name,postion_x,postion_y,postion_z, velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate):
+    # pos x:	Latitude * 1e7 pos y: Longitude * 1e7, pos z: alt, velocity_x: m/s, velocity_y: m/s, velocity_z: m/s,accel_x: m/s/s,accel_y: m/s/s,accel_z: m/s/s,
+    type_mask = 0
+    if type_mask_name == 0:
+        type_mask = int(0b110111111000)# Use position
+    elif type_mask_name == 1:
+        type_mask = int(0b110111000111)# USe velocity
+    elif type_mask_name == 2:
+        type_mask = int(0b110111000000)# USe both
+    else:
+        return
+    # message = mavutil.mavlink.MAVLink_set_position_target_local_ned_message(10, vehicle.target_system,
+    #                     vehicle.target_component, mavutil.mavlink.MAV_FRAME_LOCAL_NED, type_mask ,
+    #                     postion_x,postion_y,postion_z,
+    #                     velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
+    #                     )
+    # SET_POSITION_TARGET_GLOBAL_INT
+    # message = mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, vehicle.target_system,
+    #                     vehicle.target_component, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, type_mask ,
+    #                     postion_x,postion_y,postion_z,
+    #                     velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
+    #                     )
+    # vehicle.mav.send(message)
+    # https://mavlink.io/zh/mavgen_python/
+    vehicle.mav.set_position_target_global_int_send(10, vehicle.target_system,
+                        vehicle.target_component, mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT, type_mask ,
+                        postion_x,postion_y,postion_z,
+                        velocity_x, velocity_y, velocity_z,accel_x,accel_y,accel_z,yaw,yaw_rate
+                        )
+    return
+    # return vehicle.recv_match(type='SYS_STATUS', blocking=True)
+    # return vehicle.recv_match(type='COMMAND_ACK', blocking=True)

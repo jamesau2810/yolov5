@@ -58,10 +58,18 @@ from utils.general import (LOGGER, Profile, check_file, check_img_size, check_im
                            increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh)
 from utils.torch_utils import select_device, smart_inference_mode
 
-
-
-
-
+        
+    # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    #     ret, image = cap.read()
+    #     filename = ROOT / 'temp.jpg'
+    #     cv2.imwrite(filename, image)
+    #     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
+    #     # library.run_yolo_loop(**vars(opt))
+    #     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
+    #     library.run_yolo_loop(weights=ROOT / 'best.pt',source=filename,dev=dev)
+    #     library.run_yolo_loop(weights=ROOT / 'best.pt',source=filename) # ,socket = s
+    #/home/jamesau/Downloads/yolov5-master/best.pt
+    #/home/jamesau/Downloads/yolov5-master/516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg
 
 
 def main(opt):
@@ -72,19 +80,7 @@ def main(opt):
     modeUsed = "GUIDED"
     # modeUsed = "AUTO"
     vehicle.mode = VehicleMode(modeUsed)
-    library.set_mode(vehicle,modeUsed)
-
-
-    #
-    library.arm(vehicle)
-    library.stream_location(vehicle)
-    ori_loc = vehicle.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
-    offset = ori_loc.alt
-    print(ori_loc)
-
-    # library.set_mode(vehicle,modeUsed)
-    print(library.checklocation(vehicle))
-    library.takeoff(vehicle,10)
+    library.instr_2_takeoff(vehicle,modeUsed)
     # dev = usb.core.find(idVendor=0x045e, idProduct=0x028e)
     # # If the device is not found, raise an error
     # if dev is None:
@@ -101,41 +97,11 @@ def main(opt):
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # library.run_yolo_loop(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-    time_stamping = 0
-    velocity_x, velocity_y = 0,0
-    while True:
-        ret, image = cap.read()
-        filename = ROOT / 'temp.jpg'
-        cv2.imwrite(filename, image)
-        print("a")
-        have_result,xyxy_best,x,y = library.run_yolo_loop(weights=ROOT / 'best.pt',source=filename,source_image= image)
-        # dev=dev,
-        if have_result:
-            print("b")
-            loc = library.checklocation(vehicle)
-            print("c")
-            velocity_x, velocity_y = library.Box2Speed(loc.hdg,xyxy_best,x,y)
-            print("d")
-            library.send_int_velocity(vehicle,velocity_x, velocity_y,0)
-            print("e")
-            time_stamping = time.time()
-        else:
-            library.send_int_velocity(vehicle,0, 0,0)
-        if  time.time()>= time_stamping + 2:
-            library.send_int_velocity(vehicle,velocity_x, velocity_y,0)
-        # time.sleep(1)
-        
-    # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    #     ret, image = cap.read()
-    #     filename = ROOT / 'temp.jpg'
-    #     cv2.imwrite(filename, image)
-    #     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
-    #     # library.run_yolo_loop(**vars(opt))
-    #     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-    #     library.run_yolo_loop(weights=ROOT / 'best.pt',source=filename,dev=dev)
-    #     library.run_yolo_loop(weights=ROOT / 'best.pt',source=filename) # ,socket = s
-    #/home/jamesau/Downloads/yolov5-master/best.pt
-    #/home/jamesau/Downloads/yolov5-master/516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg
+    library.Helipad_track(vehicle,cap,weightPath = ROOT / 'best.pt')
+    # library.Helipad_Track_Land(vehicle,cap,weightPath = ROOT / 'best.pt')
+    xf = []
+    library.SurveyScan_with_stop(vehicle,xf,cap,ROOT / 'best.pt')
+    library.SurveyScan(vehicle,xf,cap,ROOT / 'best.pt')
 
 
 if __name__ == '__main__':
