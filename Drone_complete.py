@@ -94,13 +94,14 @@ def main(opt):
     cap.set(cv2.CAP_PROP_FPS, 36)
     # serialObj = serial.Serial(library.pixhawk_path)
     time.sleep(3)
-    wypts,waypoints_points = library.waypoint_file_read('/Users/jamesau/Documents/GitHub/yolov5/Trial002_waypoints.txt')
+    wypts,waypoints_points = library.waypoint_file_read(ROOT / 'Trial002_waypoints.txt')
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # library.run_yolo_loop(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
     # library.Helipad_track(vehicle,cap,weightPath = ROOT / 'best.pt')
     # library.Helipad_Track_Land(vehicle,cap,weightPath = ROOT / 'best.pt')
     library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best.pt')
+    library.return_to_launch(vehicle)
     # library.SurveyScan(vehicle,xf,cap,ROOT / 'best.pt')
 
 
