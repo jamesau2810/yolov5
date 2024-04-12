@@ -601,25 +601,26 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
             loc = checklocation(vehicle)
             velocity_x, velocity_y, left, up, width_x,width_y = Box2Speed_Helipad_Land(loc.hdg,xyxy_best,x,y)
             centre_enough, close_enough = Helipad_margin(left, up, width_x,width_y)
-            land_speed = -0.5
+            land_speed = 0.5
             if loc.relative_alt <= 1 and centre_enough:
+                print("Land Now")
                 land(vehicle)
                 break
             else:
                 if centre_enough:
-                    land_speed = -2
+                    land_speed = 2
                 elif loc.relative_alt <= 1:
                     land_speed = 0
                 elif loc.relative_alt <= 4:
-                    land_speed = -0.8
+                    land_speed = 0.8
                 send_int_velocity(vehicle,velocity_x, velocity_y,land_speed)
                 print("run one loop")
                 time_stamping = time.time()
         else:
-            send_int_velocity(vehicle,0, 0,-1)
+            send_int_velocity(vehicle,0, 0,0.5)
             time_stamping = time.time()
         if  time.time()>= time_stamping + 2:
-            send_int_velocity(vehicle,0, 0,-1)
+            send_int_velocity(vehicle,0, 0,0.5)
 def Helipad_track(vehicle,cap,weightPath):
     time_stamping = 0
     velocity_x, velocity_y = 0,0
