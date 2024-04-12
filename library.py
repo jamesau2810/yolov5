@@ -809,6 +809,7 @@ def connectMyCopter():
     elif MachineType == 1:
         sitl = dronekit_sitl.start_default()
         connection_string = sitl.connection_string()
+        # connection_string = "127.0.0.1:14550"
     elif MachineType == 2:
         connection_string ="/dev/cu.usbserial-14110"
     elif MachineType == 3:

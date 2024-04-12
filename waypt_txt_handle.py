@@ -1,6 +1,6 @@
-
-# w,t = waypoint_file_read('/Users/jamesau/Documents/GitHub/yolov5/Trial002_waypoints.txt')
-# print(w)
+import library
+w,t = library.waypoint_file_read('/Users/jamesau/Documents/GitHub/yolov5/Trial002_waypoints.txt')
+print(w)
 print(t)
 # for i in w:
 #     print(len(i))
