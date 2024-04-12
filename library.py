@@ -584,6 +584,8 @@ def alt_fmla(curr_alt,target_alt = 0,mode = 0):
         return curr_alt >= target_alt * min_rat
     elif mode == 1:
         return curr_alt >= target_alt * min_rat and curr_alt <= target_alt * max_rat
+    elif mode == 2:
+        return curr_alt <= target_alt 
     else:
         print("Error")
         return True
@@ -601,17 +603,18 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
             loc = checklocation(vehicle)
             velocity_x, velocity_y, left, up, width_x,width_y = Box2Speed_Helipad_Land(loc.hdg,xyxy_best,x,y)
             centre_enough, close_enough = Helipad_margin(left, up, width_x,width_y)
-            land_speed = 0.5
-            if loc.relative_alt <= 1 and centre_enough:
+            land_speed = 1
+
+            if alt_fmla(loc.relative_alt,1,2) and centre_enough:
                 print("Land Now")
                 land(vehicle)
-                break
+                return
             else:
                 if centre_enough:
                     land_speed = 2
-                elif loc.relative_alt <= 1:
+                elif alt_fmla(loc.relative_alt,1,2):
                     land_speed = 0
-                elif loc.relative_alt <= 4:
+                elif alt_fmla(loc.relative_alt,3,2):
                     land_speed = 0.8
                 send_int_velocity(vehicle,velocity_x, velocity_y,land_speed)
                 print("run one loop")
