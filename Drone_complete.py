@@ -103,7 +103,7 @@ def main(opt):
     # library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best.pt')
     # library.return_to_launch(vehicle)
     # library.SurveyScan(vehicle,xf,cap,ROOT / 'best.pt')
-
+    library.disarm(vehicle)
 
 if __name__ == '__main__':
     # tic = time.perf_counter()

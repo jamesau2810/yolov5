@@ -540,6 +540,14 @@ def Box2Speed_Helipad_Land(heading,xyxy_best, x, y):
 
     x_velo, y_velo = compute_direction(heading,left,up,centre_point_x,centre_point_y)
     return x_velo, y_velo, left, up, width_x, width_y
+def Helipad_land_speed_factor(x_velo_old, y_velo_old,alt,benchmark,hori_grad,vert_grad):
+    # sdf = zip(benchmark,)
+    satis = np.sum(map(lambda x: alt_fmla(alt,x,2),benchmark))
+    hori_fac = hori_grad[satis]
+    land_speed = vert_grad[satis]
+    x_velo_new = x_velo_old * hori_fac
+    y_velo_new = y_velo_old * hori_fac
+    return x_velo_new,y_velo_new,land_speed
 def Helipad_margin(left, up, width_x,width_y):
     centre_enough = False
     close_enough = False
@@ -597,13 +605,15 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
     time_stamping = 0
     velocity_x, velocity_y = 0,0
     while True:
+        land_speed = 0.5
+        loc = checklocation(vehicle)
         have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath)
+        print("altitude: ",loc.relative_alt, ", Left: ", left, ", Up: ",up)
         # dev=dev,
         if have_result:
-            loc = checklocation(vehicle)
+            
             velocity_x, velocity_y, left, up, width_x,width_y = Box2Speed_Helipad_Land(loc.hdg,xyxy_best,x,y)
             centre_enough, close_enough = Helipad_margin(left, up, width_x,width_y)
-            land_speed = 1
 
             if alt_fmla(loc.relative_alt,1,2) and centre_enough:
                 print("Land Now")
@@ -611,19 +621,19 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
                 return
             else:
                 if centre_enough:
-                    land_speed = 2
-                elif alt_fmla(loc.relative_alt,1,2):
-                    land_speed = 0
-                elif alt_fmla(loc.relative_alt,3,2):
-                    land_speed = 0.8
-                send_int_velocity(vehicle,velocity_x, velocity_y,land_speed)
+                    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[2,-1],[0.8,0.4],[2,0.8])
+                else:
+                    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[2,1,-1],[1,1,1],[1,0.5,0])
+                send_int_velocity(vehicle,velocity_x_new,velocity_y_new,land_speed)
                 print("run one loop")
                 time_stamping = time.time()
         else:
-            send_int_velocity(vehicle,0, 0,0.5)
+            velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[2,1,-1],[1,1,1],[1,0.25,0])
+            send_int_velocity(vehicle,0, 0,land_speed)
             time_stamping = time.time()
         if  time.time()>= time_stamping + 2:
-            send_int_velocity(vehicle,0, 0,0.5)
+            velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[2,1,-1],[1,1,1],[0.5,0.25,0])
+            send_int_velocity(vehicle,0, 0,land_speed)
 def Helipad_track(vehicle,cap,weightPath):
     time_stamping = 0
     velocity_x, velocity_y = 0,0
@@ -684,9 +694,9 @@ def instr_2_takeoff(vehicle,modeUsed,altitude = 10):
     #
     arm(vehicle)
     stream_location(vehicle)
-    ori_loc = vehicle.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
-    offset = ori_loc.alt
-    print(ori_loc)
+    # ori_loc = vehicle.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
+    # offset = ori_loc.alt
+    # print(ori_loc)
 
     # library.set_mode(vehicle,modeUsed)
     print(checklocation(vehicle))
