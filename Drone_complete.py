@@ -99,9 +99,9 @@ def main(opt):
     # library.run_yolo_loop(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
     # library.Helipad_track(vehicle,cap,weightPath = ROOT / 'best.pt')
-    # library.Helipad_Track_Land(vehicle,cap,weightPath = ROOT / 'best.pt')
-    library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best.pt')
-    library.return_to_launch(vehicle)
+    library.Helipad_Track_Land(vehicle,cap,weightPath = ROOT / 'best.pt')
+    # library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best.pt')
+    # library.return_to_launch(vehicle)
     # library.SurveyScan(vehicle,xf,cap,ROOT / 'best.pt')
 
 
