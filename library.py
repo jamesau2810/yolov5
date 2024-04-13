@@ -542,7 +542,7 @@ def Box2Speed_Helipad_Land(heading,xyxy_best, x, y):
     return x_velo, y_velo, left, up, width_x, width_y
 def Helipad_land_speed_factor(x_velo_old, y_velo_old,alt,benchmark,hori_grad,vert_grad):
     # sdf = zip(benchmark,)
-    satis = np.sum(map(lambda x: alt_fmla(alt,x,2),benchmark))
+    satis = np.sum(list(map(lambda x: alt_fmla(alt,x,2),benchmark)))
     hori_fac = hori_grad[satis]
     land_speed = vert_grad[satis]
     x_velo_new = x_velo_old * hori_fac
