@@ -4,4 +4,5 @@ print(w)
 print(t)
 velocity_x = 3
 velocity_y = 4
-library.Helipad_land_speed_factor(velocity_x, velocity_y,3,[2,1,-1],[1,1,1],[1,0.5,0])
+vx,vy,vz = library.Helipad_land_speed_factor(velocity_x, velocity_y,3,[2,1,-1],[1,1,1],[1,0.5,0])
+print(vx,vy,vz)

@@ -608,7 +608,7 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
         land_speed = 0.5
         loc = checklocation(vehicle)
         have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath)
-        print("altitude: ",loc.relative_alt, ", Left: ", left, ", Up: ",up)
+        print("Altitude: ",loc.relative_alt, ", Latitude: ",loc.lat ,", Longtitude: ",loc.lon )
         # dev=dev,
         if have_result:
             
@@ -634,6 +634,7 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
         if  time.time()>= time_stamping + 2:
             velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[2,1,-1],[1,1,1],[0.5,0.25,0])
             send_int_velocity(vehicle,0, 0,land_speed)
+
 def Helipad_track(vehicle,cap,weightPath):
     time_stamping = 0
     velocity_x, velocity_y = 0,0
