@@ -593,7 +593,7 @@ def alt_fmla(curr_alt,target_alt = 0,mode = 0):
     elif mode == 1:
         return curr_alt >= target_alt * min_rat and curr_alt <= target_alt * max_rat
     elif mode == 2:
-        return curr_alt <= target_alt 
+        return curr_alt <= target_alt * max_rat
     else:
         print("Error")
         return True
@@ -621,9 +621,9 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
                 return
             else:
                 if centre_enough:
-                    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[2,-1],[0.8,0.4],[2,0.8])
+                    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,2,-1],[0.8,0.8,0.4],[2,1.2,0.8])
                 else:
-                    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[2,1,-1],[1,1,1],[1,0.5,0])
+                    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,1,-1],[1,1,1],[1,0.5,0])
                 send_int_velocity(vehicle,velocity_x_new,velocity_y_new,land_speed)
                 print("run one loop")
                 time_stamping = time.time()
