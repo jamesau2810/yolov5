@@ -80,7 +80,7 @@ def main(opt):
     modeUsed = "GUIDED"
     # modeUsed = "AUTO"
     vehicle.mode = VehicleMode(modeUsed)
-    library.instr_2_takeoff(vehicle,modeUsed,30)
+    library.instr_2_takeoff(vehicle,modeUsed,10)
     # dev = usb.core.find(idVendor=0x045e, idProduct=0x028e)
     # # If the device is not found, raise an error
     # if dev is None:
