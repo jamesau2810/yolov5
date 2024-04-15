@@ -600,6 +600,9 @@ def alt_fmla(curr_alt,target_alt = 0,mode = 0):
 
 # Combined Loop
 
+def Helipad_Land_and_send(vehicle,velocity_x, velocity_y,loc,benchmark,hori_grad,vert_grad):
+    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,benchmark,hori_grad,vert_grad)
+    send_int_velocity(vehicle,0, 0,land_speed)
 
 def Helipad_Track_Land(vehicle,cap,weightPath):
     time_stamping = 0
@@ -614,7 +617,7 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
             
             velocity_x, velocity_y, left, up, width_x,width_y = Box2Speed_Helipad_Land(loc.hdg,xyxy_best,x,y)
             centre_enough, close_enough = Helipad_margin(left, up, width_x,width_y)
-
+            print("Centre Enough: ",centre_enough,", Left: ", left,", Up: ",up)
             if alt_fmla(loc.relative_alt,1,2) and centre_enough:
                 print("Land Now")
                 land(vehicle)
@@ -633,12 +636,12 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
                 print("run one loop")
                 time_stamping = time.time()
         else:
-            velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,2,-1],[1,1,1],[1,0.25,0])
-            send_int_velocity(vehicle,0, 0,land_speed)
+            Helipad_Land_and_send(vehicle,0,0,loc,[5,2,-1],[1,1,1],[1,0.25,0])
             time_stamping = time.time()
         if  time.time()>= time_stamping + 2:
-            velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,2,-1],[1,1,1],[0.5,0.25,0])
-            send_int_velocity(vehicle,0, 0,land_speed)
+            # velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,)
+            # send_int_velocity(vehicle,0, 0,land_speed)
+            Helipad_Land_and_send(vehicle,0,0,loc,[5,2,-1],[1,1,1],[0.5,0.25,0])
 
 def Helipad_track(vehicle,cap,weightPath):
     time_stamping = 0
