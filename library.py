@@ -174,7 +174,8 @@ def run_yolo_loop(
                 # if det_best
                 xyxy_best_chose = det_best[:4]
                 # Yogesh, start of here
-                x,y =  im.shape[:2]
+                # x,y =  im.shape[:2]
+                x,y =  im0.shape[:2]
                 have_result = True
                 xyxy_best =  xyxy_best_chose
                 x_point = x
