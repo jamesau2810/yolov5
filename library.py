@@ -552,7 +552,7 @@ def Helipad_land_speed_factor(x_velo_old, y_velo_old,alt,benchmark,hori_grad,ver
 def Helipad_margin(left, up, width_x,width_y):
     centre_enough = False
     close_enough = False
-    if np.abs(left) <= 10 and np.abs(up) <= 10:
+    if np.abs(left-50) <= 10 and np.abs(up-50) <= 10:
         centre_enough = True
     if width_x >=80 and  width_y >= 80:
         close_enough = True
