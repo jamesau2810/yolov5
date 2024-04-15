@@ -617,7 +617,7 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
             
             velocity_x, velocity_y, left, up, width_x,width_y = Box2Speed_Helipad_Land(loc.hdg,xyxy_best,x,y)
             centre_enough, close_enough = Helipad_margin(left, up, width_x,width_y)
-            print("Centre Enough: ",centre_enough,", Left: ", left,", Up: ",up)
+            print("Centre Enough: ",centre_enough,", Left: ", left,", Up: ",up, "x:y:",x,y)
             if alt_fmla(loc.relative_alt,1,2) and centre_enough:
                 print("Land Now")
                 land(vehicle)
