@@ -619,20 +619,25 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
                 print("Land Now")
                 land(vehicle)
                 return
+            elif loc.relative_alt <= 0:
+                print("Hit ground")
+                disarm(vehicle)
+                return
             else:
                 if centre_enough:
                     velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,2,-1],[0.8,0.8,0.4],[2,1.2,0.8])
                 else:
                     velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,1,-1],[1,1,1],[1,0.5,0])
-                send_int_velocity(vehicle,velocity_x_new,velocity_y_new,land_speed)
+                # send_int_velocity(vehicle,velocity_x_new,velocity_y_new,land_speed)
+                send_int_velocity(vehicle,0,0,land_speed)
                 print("run one loop")
                 time_stamping = time.time()
         else:
-            velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[2,1,-1],[1,1,1],[1,0.25,0])
+            velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,2,-1],[1,1,1],[1,0.25,0])
             send_int_velocity(vehicle,0, 0,land_speed)
             time_stamping = time.time()
         if  time.time()>= time_stamping + 2:
-            velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[2,1,-1],[1,1,1],[0.5,0.25,0])
+            velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,2,-1],[1,1,1],[0.5,0.25,0])
             send_int_velocity(vehicle,0, 0,land_speed)
 
 def Helipad_track(vehicle,cap,weightPath):
