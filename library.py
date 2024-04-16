@@ -630,11 +630,11 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
                 return
             else:
                 if centre_enough:
-                    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,2,-1],[0.6,0.4,0.2],[2,1.2,0.8])
+                    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,2,-1],[0.04,0.02,0.01],[2,1.2,0.8])
                 else:
-                    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,1,-1],[1,1,1],[1,0.5,0])
-                # send_int_velocity(vehicle,velocity_x_new,velocity_y_new,land_speed)
-                send_int_velocity(vehicle,0,0,land_speed)
+                    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,1,-1],[0.5,0.3,0.1],[1,0.5,0])
+                send_int_velocity(vehicle,velocity_x_new,velocity_y_new,land_speed)
+                # send_int_velocity(vehicle,0,0,land_speed)
                 print("run one loop")
                 time_stamping = time.time()
         else:
