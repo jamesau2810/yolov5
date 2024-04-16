@@ -550,9 +550,10 @@ def Helipad_land_speed_factor(x_velo_old, y_velo_old,alt,benchmark,hori_grad,ver
     y_velo_new = y_velo_old * hori_fac
     return x_velo_new,y_velo_new,land_speed
 def Helipad_margin(left, up, width_x,width_y):
+    centre_margin = 15
     centre_enough = False
     close_enough = False
-    if np.abs(left-50) <= 10 and np.abs(up-50) <= 10:
+    if np.abs(left-50) <= centre_margin and np.abs(up-50) <= centre_margin:
         centre_enough = True
     if width_x >=80 and  width_y >= 80:
         close_enough = True
@@ -629,7 +630,7 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
                 return
             else:
                 if centre_enough:
-                    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,2,-1],[0.8,0.8,0.4],[2,1.2,0.8])
+                    velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,2,-1],[0.6,0.4,0.2],[2,1.2,0.8])
                 else:
                     velocity_x_new,velocity_y_new,land_speed = Helipad_land_speed_factor(velocity_x, velocity_y,loc.relative_alt,[5,1,-1],[1,1,1],[1,0.5,0])
                 # send_int_velocity(vehicle,velocity_x_new,velocity_y_new,land_speed)
@@ -752,7 +753,7 @@ def land(vehicle):
             loc = checklocation(vehicle)
             print(" Altitude: ", loc.relative_alt)
             # Break and return from function just below target altitude.
-            if loc.relative_alt <=0+0.05:
+            if loc.relative_alt <=80:
                 print("Reached target altitude")
                 break
             time.sleep(1)
