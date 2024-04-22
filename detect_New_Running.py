@@ -86,12 +86,12 @@ def main(opt):
         filename = ROOT / 'temp.jpg'
         cv2.imwrite(filename, image)
         have_result,xyxy_best,x,y = library.run_yolo_loop(
-            # weights=ROOT / 'best_Helipad.pt',
-            weights=ROOT / 'best_Drown_2.pt',
+            weights=ROOT / 'best_Helipad.pt',
+            # weights=ROOT / 'best_Drown_2.pt',
             source=filename,
             source_image= image,
-            # target_labels = ["helipad"],
-            target_labels = ["Out of Water"],
+            target_labels = ["helipad"],
+            # target_labels = ["Out of Water"],
             # dev=dev,
             # serialObj = 
             )
