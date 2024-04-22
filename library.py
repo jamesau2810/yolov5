@@ -202,7 +202,7 @@ def run_yolo_loop(
 def filter_by_name(names,det,target_labels):
     # XYXY:0,1,2,3. confidence score:4. Class:5
     det_New = [a for a in det if Check_Label(names,a,5,target_labels)]
-    return det_New
+    return np.array(det_New)
 @smart_inference_mode()
 def scale_big(det,im,im0):
     # Rescale boxes from img_size to im0 size
