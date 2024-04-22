@@ -161,17 +161,12 @@ def run_yolo_loop(
             s += s_pred_pros
             # Print time (inference-only)
             LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
-            if len(det):
-                # Rescale boxes from img_size to im0 size
-                det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
-                # XYXY:0,1,2,3. confidence score:4. Class:5
-                # Extracted Helipad object
-                det_New = [a for a in det if Check_Label(names,a,5,target_labels)]
+            det_new = filter_by_name(names,det,target_labels)
+            
+            if len(det_new):
+                det_new = scale_big(det_new,im,im0)
                 # cdcv = 0
-                # Sorted according to determinant score
-                # if len(det_New):
-                det_New.sort(key=lambda x: x[4])
-                det_best = det_New[0]
+                det_best = find_best(det_new)
                 # if det_best
                 xyxy_best_chose = det_best[:4]
                 # Yogesh, start of here
@@ -203,6 +198,24 @@ def run_yolo_loop(
 
 
 # end method
+@smart_inference_mode()
+def filter_by_name(names,det,target_labels):
+    # XYXY:0,1,2,3. confidence score:4. Class:5
+    det_New = [a for a in det if Check_Label(names,a,5,target_labels)]
+    return det_New
+@smart_inference_mode()
+def scale_big(det,im,im0):
+    # Rescale boxes from img_size to im0 size
+    det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
+    return det
+@smart_inference_mode()
+def find_best(det_New):
+    # Extracted Helipad object
+    # Sorted according to determinant score
+    # if len(det_New):
+    det_New.sort(key=lambda x: x[4])
+    det_best = det_New[0]
+    return det_best
 @smart_inference_mode()
 def Check_Label(names,a,loc,labeltar):
     # res = names[int(a[5])]=='helipad'
