@@ -206,7 +206,7 @@ def run_yolo_loop(
 @smart_inference_mode()
 def Check_Label(names,a,loc,labeltar):
     # res = names[int(a[5])]=='helipad'
-    res = np.sum(list(map(lambda x:names[int(a[loc])]==x,labeltar)))
+    res = np.sum(list(map(lambda x:names[int(a[loc])]==x,labeltar))) > 0
     return res
 @smart_inference_mode()
 def pred_processing(webcam,im0s,i,save_dir,dataset,frame,im ,save_crop,line_thickness,names):
