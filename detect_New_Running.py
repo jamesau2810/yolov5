@@ -86,7 +86,7 @@ def main(opt):
         filename = ROOT / 'temp.jpg'
         cv2.imwrite(filename, image)
         have_result,xyxy_best,x,y = library.run_yolo_loop(
-            weights=ROOT / 'best.pt',
+            weights=ROOT / 'best_Helipad.pt',
             source=filename,
             source_image= image,
             # dev=dev,
@@ -100,9 +100,9 @@ def main(opt):
     #     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     #     # library.run_yolo_loop(**vars(opt))
     #     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-    #     library.run_yolo_loop(weights=ROOT / 'best.pt',source=filename,dev=dev)
-    #     library.run_yolo_loop(weights=ROOT / 'best.pt',source=filename) # ,socket = s
-    #/home/jamesau/Downloads/yolov5-master/best.pt
+    #     library.run_yolo_loop(weights=ROOT / 'best_Helipad.pt',source=filename,dev=dev)
+    #     library.run_yolo_loop(weights=ROOT / 'best_Helipad.pt',source=filename) # ,socket = s
+    #/home/jamesau/Downloads/yolov5-master/best_Helipad.pt
     #/home/jamesau/Downloads/yolov5-master/516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg
 
 

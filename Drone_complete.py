@@ -66,9 +66,9 @@ from utils.torch_utils import select_device, smart_inference_mode
     #     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     #     # library.run_yolo_loop(**vars(opt))
     #     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-    #     library.run_yolo_loop(weights=ROOT / 'best.pt',source=filename,dev=dev)
-    #     library.run_yolo_loop(weights=ROOT / 'best.pt',source=filename) # ,socket = s
-    #/home/jamesau/Downloads/yolov5-master/best.pt
+    #     library.run_yolo_loop(weights=ROOT / 'best_Helipad.pt',source=filename,dev=dev)
+    #     library.run_yolo_loop(weights=ROOT / 'best_Helipad.pt',source=filename) # ,socket = s
+    #/home/jamesau/Downloads/yolov5-master/best_Helipad.pt
     #/home/jamesau/Downloads/yolov5-master/516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg
 
 
@@ -98,11 +98,11 @@ def main(opt):
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # library.run_yolo_loop(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-    # library.Helipad_track(vehicle,cap,weightPath = ROOT / 'best.pt')
-    library.Helipad_Track_Land(vehicle,cap,weightPath = ROOT / 'best.pt')
-    # library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best.pt')
+    # library.Helipad_track(vehicle,cap,weightPath = ROOT / 'best_Helipad.pt')
+    library.Helipad_Track_Land(vehicle,cap,weightPath = ROOT / 'best_Helipad.pt')
+    # library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best_Helipad.pt')
     # library.return_to_launch(vehicle)
-    # library.SurveyScan(vehicle,xf,cap,ROOT / 'best.pt')
+    # library.SurveyScan(vehicle,xf,cap,ROOT / 'best_Helipad.pt')
     library.disarm(vehicle)
 
 if __name__ == '__main__':

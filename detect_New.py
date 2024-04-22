@@ -272,8 +272,8 @@ def main(opt):
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # run(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-    run(weights=ROOT / 'best.pt',source=filename)
-    #/home/jamesau/Downloads/yolov5-master/best.pt
+    run(weights=ROOT / 'best_Helipad.pt',source=filename)
+    #/home/jamesau/Downloads/yolov5-master/best_Helipad.pt
     #/home/jamesau/Downloads/yolov5-master/516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg
 
 
