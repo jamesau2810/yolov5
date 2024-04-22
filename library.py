@@ -86,6 +86,7 @@ def run_yolo_loop(
         line_thickness=3,  # bounding box thickness (pixels)
         hide_labels=False,  # hide labels
         hide_conf=False,  # hide confidences
+        target_labels = ["helipad"],
         half=False,  # use FP16 half-precision inference
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
@@ -165,7 +166,7 @@ def run_yolo_loop(
                 det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
                 # XYXY:0,1,2,3. confidence score:4. Class:5
                 # Extracted Helipad object
-                det_New = [a for a in det if names[int(a[5])]=='helipad']
+                det_New = [a for a in det if Check_Label(names,a,5,target_labels)]
                 # cdcv = 0
                 # Sorted according to determinant score
                 # if len(det_New):
@@ -202,6 +203,11 @@ def run_yolo_loop(
 
 
 # end method
+@smart_inference_mode()
+def Check_Label(names,a,loc,labeltar):
+    # res = names[int(a[5])]=='helipad'
+    res = np.sum(list(map(lambda x:names[int(a[loc])]==x,labeltar)))
+    return res
 @smart_inference_mode()
 def pred_processing(webcam,im0s,i,save_dir,dataset,frame,im ,save_crop,line_thickness,names):
     s = ""
@@ -377,12 +383,12 @@ def parse_opt():
 
 
 # Nuc Pixhawk Section
-def capture_and_yolo_read(cap,weightpath):
+def capture_and_yolo_read(cap,weightpath,target_labels):
     ret, image = cap.read()
     filename = ROOT / 'temp.jpg'
     cv2.imwrite(filename, image)
     print("a")
-    have_result,xyxy_best,x,y = run_yolo_loop(weights=weightpath,source=filename,source_image= image)
+    have_result,xyxy_best,x,y = run_yolo_loop(weights=weightpath,source=filename,source_image= image,target_labels = target_labels)
     return have_result,xyxy_best,x,y
 
 
@@ -612,7 +618,7 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
     while True:
         land_speed = 0.5
         loc = checklocation(vehicle)
-        have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath)
+        have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath,target_labels = ["helipad"])
         print("Altitude: ",loc.relative_alt, ", Latitude: ",loc.lat ,", Longtitude: ",loc.lon )
         # dev=dev,
         if have_result:
@@ -650,7 +656,7 @@ def Helipad_track(vehicle,cap,weightPath):
     velocity_x, velocity_y = 0,0
     while True:
         
-        have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath)
+        have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath,target_labels = ["helipad"])
         # dev=dev,
         if have_result:
             loc = checklocation(vehicle)
@@ -664,21 +670,21 @@ def Helipad_track(vehicle,cap,weightPath):
             send_int_velocity(vehicle,velocity_x, velocity_y,0)
         # time.sleep(1)
 
-def SurveyScan_with_stop(vehicle,waypoints,cap,weightPath):
-    result = SurveyScan_with_stop_Loop(vehicle,waypoints,cap,weightPath)
+def SurveyScan_with_stop(vehicle,waypoints,cap,weightPath,target_labels):
+    result = SurveyScan_with_stop_Loop(vehicle,waypoints,cap,weightPath,target_labels)
     if result:
         loc = checklocation(vehicle)
         print("Deploy tube")
         deploy_tube()
         return
 
-def SurveyScan(vehicle,waypoints,cap,weightPath):
+def SurveyScan(vehicle,waypoints,cap,weightPath,target_labels):
     scan_location_list = []
     for i in waypoints:
-        path_scan_list = waypoint_with_scan(vehicle,i["latitude"],i["longitude"],i["altitude"],cap,weightPath,hold=10,acptrad=0,passrad=0,yaw = 0)
+        path_scan_list = waypoint_with_scan(vehicle,i["latitude"],i["longitude"],i["altitude"],cap,weightPath,target_labels,hold=10,acptrad=0,passrad=0,yaw = 0)
         scan_location_list.append(path_scan_list)
     return scan_location_list
-def waypoint_with_scan(vehicle,latitude,longitude,altitude,cap,weightPath,hold=10,acptrad=0,passrad=0,yaw = 0):
+def waypoint_with_scan(vehicle,latitude,longitude,altitude,cap,weightPath,target_labels,hold=10,acptrad=0,passrad=0,yaw = 0):
     Scan_Location_List = []
     send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
     interval =2
@@ -690,7 +696,7 @@ def waypoint_with_scan(vehicle,latitude,longitude,altitude,cap,weightPath,hold=1
             print("Reached location")
             break
         else:
-            have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath)
+            have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath,target_labels)
             if have_result:
                 loc = checklocation(vehicle)
                 Scan_Location_List.append(loc)
@@ -1021,13 +1027,13 @@ def checklocation(vehicle):
     # response = waitMessage(vehicle,33)
     return vehicle.recv_match(type='GLOBAL_POSITION_INT', blocking=True)
 
-def SurveyScan_with_stop_Loop(vehicle,waypoints,cap,weightPath):
+def SurveyScan_with_stop_Loop(vehicle,waypoints,cap,weightPath,target_labels):
     for i in waypoints:
-        path_scan_result = waypoint_with_scan_stop(vehicle,i["latitude"],i["longitude"],i["altitude"],cap,weightPath,hold=10,acptrad=0,passrad=0,yaw = 0)
+        path_scan_result = waypoint_with_scan_stop(vehicle,i["latitude"],i["longitude"],i["altitude"],cap,weightPath,target_labels,hold=10,acptrad=0,passrad=0,yaw = 0)
         if path_scan_result:
             return True
     return False
-def waypoint_with_scan_stop(vehicle,latitude,longitude,altitude,cap,weightPath,hold=10,acptrad=0,passrad=0,yaw = 0):
+def waypoint_with_scan_stop(vehicle,latitude,longitude,altitude,cap,weightPath,target_labels,hold=10,acptrad=0,passrad=0,yaw = 0):
     send_int_velo_pos_cmd(vehicle,0,latitude, longitude, altitude, 0, 0, 0,  0, 0, 0,1.57, 0.5)
     interval =2
     while True:
@@ -1038,7 +1044,7 @@ def waypoint_with_scan_stop(vehicle,latitude,longitude,altitude,cap,weightPath,h
             print("Reached location")
             return False
         else:
-            have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath)
+            have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath,target_labels)
             if have_result:
                 # loc = checklocation(vehicle)
                 return True

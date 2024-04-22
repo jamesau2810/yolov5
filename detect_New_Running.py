@@ -87,11 +87,15 @@ def main(opt):
         cv2.imwrite(filename, image)
         have_result,xyxy_best,x,y = library.run_yolo_loop(
             weights=ROOT / 'best_Helipad.pt',
+            # weights=ROOT / 'best_Drown_2.pt',
             source=filename,
             source_image= image,
+            target_labels = ["helipad"],
+            # target_labels = "Out of Water",
             # dev=dev,
             # serialObj = 
             )
+
         # library.Box2Send(xyxy_best,x,y,serialObj)
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #     ret, image = cap.read()
