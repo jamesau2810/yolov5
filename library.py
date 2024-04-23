@@ -207,14 +207,15 @@ def filter_by_name(names,det,target_labels):
 def scale_big(det,im,im0):
     # Rescale boxes from img_size to im0 size
     det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
-    return np.array(det)
+    return det
 @smart_inference_mode()
 def find_best(det_New):
     # Extracted Helipad object
     # Sorted according to determinant score
     # if len(det_New):
-    det_New.sort(key=lambda x: x[4])
-    det_best = det_New[0]
+    det_X = list(det_New)
+    det_X.sort(key=lambda x: x[4])
+    det_best = det_X[0]
     return det_best
 @smart_inference_mode()
 def Check_Label(names,a,loc,labeltar):
