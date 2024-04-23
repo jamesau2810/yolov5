@@ -181,7 +181,7 @@ def run_yolo_loop(
                 # data = dev.read(0x81, 1024)
 
                 # Print the data
-                # print(data) run(weights=ROOT / 'best_Helipad.pt',source=filename)
+                # print(data)
             if len(det):
                 # The result is :
                 # det
@@ -259,6 +259,17 @@ def print_results_end_yolo(seen,dt,save_txt,save_img,save_dir,imgsz,update,weigh
     if save_txt or save_img:
         s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
         LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
+    if update:
+        strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
+
+@smart_inference_mode()
+def print_results_end_yolo_2(seen,dt,save_txt,save_img,imgsz,update,weights):
+    # Print results
+    t = tuple(x.t / seen * 1E3 for x in dt)  # speeds per image
+    LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
+    # if save_txt or save_img:
+    #     s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
+    #     LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
     if update:
         strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
