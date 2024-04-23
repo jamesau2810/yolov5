@@ -181,8 +181,8 @@ def run_yolo_loop(
                 # data = dev.read(0x81, 1024)
 
                 # Print the data
-                # print(data)
-
+                # print(data) run(weights=ROOT / 'best_Helipad.pt',source=filename)
+            if len(det):
                 # The result is :
                 # det
                 # Pick here
