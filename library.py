@@ -207,7 +207,7 @@ def filter_by_name(names,det,target_labels):
 def scale_big(det,im,im0):
     # Rescale boxes from img_size to im0 size
     det[:, :4] = scale_boxes(im.shape[2:], det[:, :4], im0.shape).round()
-    return det
+    return np.array(det)
 @smart_inference_mode()
 def find_best(det_New):
     # Extracted Helipad object
