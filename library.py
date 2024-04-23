@@ -90,6 +90,7 @@ def run_yolo_loop(
         half=False,  # use FP16 half-precision inference
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
+        label_display = False,
         # dev = usb.core.find(idVendor=0x045e, idProduct=0x028e),
         # serialObj = serial.Serial(pixhawk_path)
         # socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM),
@@ -159,6 +160,15 @@ def run_yolo_loop(
             im0,s_pred_pros = pred_pro_1(webcam,im0s,i)
             # im0,save_path,txt_path,gn, imc,annotator ,s_pred_pros  = pred_processing(webcam,im0s,i,save_dir,dataset,frame,im,save_crop,line_thickness,names)
             s += s_pred_pros
+
+            if len(det) and label_display:
+                # The result is :
+                # det
+                # Pick here
+                s_print_res = print_result_yolo(det,names)
+                s += s_print_res
+                # Pick Here
+
             # Print time (inference-only)
             LOGGER.info(f"{s}{'' if len(det) else '(no detections), '}{dt[1].dt * 1E3:.1f}ms")
             det_new = filter_by_name(names,det,target_labels)
@@ -182,13 +192,6 @@ def run_yolo_loop(
 
                 # Print the data
                 # print(data)
-            if len(det):
-                # The result is :
-                # det
-                # Pick here
-                s_print_res = print_result_yolo(det,names)
-                s += s_print_res
-                # Pick Here
             # stream_result(annotator,view_img,p,windows)
             # write_result(det,names,hide_conf,save_csv,write_to_csv,save_txt,gn,save_conf,txt_path,save_img,save_crop,view_img,hide_labels,annotator,imc,save_dir,p)
             # save_result(save_img,dataset,im0,vid_path,vid_writer,vid_cap,i)

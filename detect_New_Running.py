@@ -92,6 +92,7 @@ def main(opt):
             source_image= image,
             # target_labels = ["helipad"],
             target_labels = ["Out of Water"],
+            label_display = True,
             # dev=dev,
             # serialObj = 
             )
