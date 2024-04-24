@@ -869,7 +869,7 @@ def waitMessage(vehicle,msgid):
 
 
 def connectMyCopter():
-    MachineType = 0
+    MachineType = 3
     connection_string = ""
     if MachineType == 0:
         parser = argparse.ArgumentParser(description="commands")
