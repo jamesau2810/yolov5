@@ -80,7 +80,7 @@ def main(opt):
     modeUsed = "GUIDED"
     # modeUsed = "AUTO"
     vehicle.mode = VehicleMode(modeUsed)
-    library.instr_2_takeoff(vehicle,modeUsed,10)
+    library.instr_2_takeoff(vehicle,modeUsed,2)
     # dev = usb.core.find(idVendor=0x045e, idProduct=0x028e)
     # # If the device is not found, raise an error
     # if dev is None:
@@ -101,9 +101,9 @@ def main(opt):
     # library.Helipad_track(vehicle,cap,weightPath = ROOT / 'best_Helipad.pt')
     library.Helipad_Track_Land(vehicle,cap,weightPath = ROOT / 'best_Helipad.pt')
     # library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best_Helipad.pt',["helipad"])
-    library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best_Drown_2.pt',["Out of Water","drowning","3"])
+    # library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best_Drown_2.pt',["Out of Water","drowning","3"])
     # library.return_to_launch(vehicle)
-    library.SurveyScan(vehicle,waypoints_points,cap,ROOT / 'best_Helipad.pt',["helipad"])
+    # library.SurveyScan(vehicle,waypoints_points,cap,ROOT / 'best_Helipad.pt',["helipad"])
     library.disarm(vehicle)
 
 if __name__ == '__main__':
