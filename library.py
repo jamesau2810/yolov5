@@ -965,8 +965,11 @@ def check_location_arrived(vehicle,lat, lon, alt, interval):
             print("Reached location")
             break
         time.sleep(1)
-
-
+def set_altitude():
+    set_parameter(vehicle,33,)
+def set_parameter(vehicle,parameter_id,parameter_value,parameter_type):
+    vehicle.param_set_send(vehicle.target_system,vehicle.target_component,parameter_id,parameter_value,parameter_type)
+    return
 
 
 def stream_location(vehicle):
@@ -1035,7 +1038,13 @@ def stream_msg(vehicle,msd_id):
         print("Command Set Message Stream accepted")
     else:
         print("Command failed")
-
+def set_origin(vehicle,bit = 1):
+    message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
+                                              mavutil.mavlink.MAV_CMD_DO_SET_HOME, 0, bit, 0, 0, 0, 0, 0, 0)
+    # Send the COMMAND_LONG
+    vehicle.mav.send(message)
+    # Wait for a response (blocking) to the MAV_CMD_SET_MESSAGE_INTERVAL command and print result
+    response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
 def arm_disarm_command(vehicle,bit):
     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
                                               mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM, 0, bit, 0, 0, 0, 0, 0, 0)

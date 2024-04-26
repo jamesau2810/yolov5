@@ -102,6 +102,7 @@ modeUsed = "GUIDED"
 # modeUsed = "AUTO"
 # vehicle.set
 vehicle.mode = VehicleMode(modeUsed)
+library.set_origin(vehicle)
 # library.arm(vehicle)
 while True:
     print(library.checklocation(vehicle))
