@@ -1045,6 +1045,8 @@ def set_origin(vehicle,bit = 1):
     vehicle.mav.send(message)
     # Wait for a response (blocking) to the MAV_CMD_SET_MESSAGE_INTERVAL command and print result
     response = vehicle.recv_match(type='COMMAND_ACK', blocking=True)
+    print(response)
+    return
 def arm_disarm_command(vehicle,bit):
     message = vehicle.mav.command_long_encode(vehicle.target_system, vehicle.target_component,
                                               mavutil.mavlink.MAV_CMD_COMPONENT_ARM_DISARM, 0, bit, 0, 0, 0, 0, 0, 0)
