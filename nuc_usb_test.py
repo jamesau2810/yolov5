@@ -102,8 +102,9 @@ modeUsed = "GUIDED"
 # modeUsed = "AUTO"
 # vehicle.set
 vehicle.mode = VehicleMode(modeUsed)
-library.arm(vehicle)
-print(library.checklocation(vehicle))
+# library.arm(vehicle)
+while True:
+    print(library.checklocation(vehicle))
 # library.instr_2_takeoff(vehicle,modeUsed,altitude=10)
 
 
