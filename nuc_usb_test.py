@@ -104,11 +104,11 @@ modeUsed = "GUIDED"
 vehicle.mode = VehicleMode(modeUsed)
 library.set_origin(vehicle)
 library.set_mode(vehicle,modeUsed)
-library.stream_location(vehicle)
-library.arm(vehicle)
-while True:
-    print(library.checklocation(vehicle))
-# library.instr_2_takeoff(vehicle,modeUsed,altitude=2)
+# library.stream_location(vehicle)
+# library.arm(vehicle)
+# while True:
+#     print(library.checklocation(vehicle))
+library.instr_2_takeoff(vehicle,modeUsed,altitude=2)
 
 
 #
