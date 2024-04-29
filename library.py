@@ -975,7 +975,7 @@ def set_parameter(vehicle,parameter_id,parameter_value,parameter_type):
 def stream_location(vehicle):
     # msd_id = mavutil.mavlink.GLOBAL_POSITION_INT
     msd_id = 33
-    stream_msg(vehicle,msd_id)
+    stream_msg(vehicle,msd_id,200000)
 
 
 
@@ -1013,7 +1013,7 @@ def send_int_velo_pos_cmd(vehicle,type_mask_name,postion_x,postion_y,postion_z, 
     # return vehicle.recv_match(type='SYS_STATUS', blocking=True)
     # return vehicle.recv_match(type='COMMAND_ACK', blocking=True)
 
-def stream_msg(vehicle,msd_id):
+def stream_msg(vehicle,msd_id,interval):
     # msd_id = mavutil.mavlink.MAVLINK_MSG_ID_BATTERY_STATUS
     # Define command_long_encode message to send MAV_CMD_SET_MESSAGE_INTERVAL command
     # param1: MAVLINK_MSG_ID_BATTERY_STATUS (message to stream)
@@ -1024,7 +1024,7 @@ def stream_msg(vehicle,msd_id):
             mavutil.mavlink.MAV_CMD_SET_MESSAGE_INTERVAL,  # ID of command to send
             0,  # Confirmation
             msd_id,  # param1: Message ID to be streamed
-            1000000, # param2: Interval in microseconds
+            interval, # param2: Interval in microseconds
             0,       # param3 (unused)
             0,       # param4 (unused)
             0,       # param5 (unused)
