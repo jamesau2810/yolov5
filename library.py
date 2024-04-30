@@ -7,7 +7,7 @@ https://mavlink.io/en/messages/common.html
 
 """
 # from dronekit import connect, VehicleMode, LocationGlobalRelative, APIException
-import dronekit_sitl
+# import dronekit_sitl
 # import socket
 # try:
 #     import exceptions
@@ -37,6 +37,7 @@ import socket
 # import usb.core
 # import usb.util
 import serial
+# import image2video_lib
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
@@ -158,7 +159,8 @@ def run_yolo_loop(
         for i, det in enumerate(pred):  # per image
             seen += 1
             im0,s_pred_pros = pred_pro_1(webcam,im0s,i)
-            # im0,save_path,txt_path,gn, imc,annotator ,s_pred_pros  = pred_processing(webcam,im0s,i,save_dir,dataset,frame,im,save_crop,line_thickness,names)
+            # im0,save_path,txt_path,gn, imc ,s_pred_pros  = pred_processing(webcam,im0s,i,save_dir,dataset,frame,im,save_crop)
+            # annotator = Annotator(im0, line_width=line_thickness, example=str(names))
             s += s_pred_pros
 
             if len(det) and label_display:
@@ -192,11 +194,12 @@ def run_yolo_loop(
 
                 # Print the data
                 # print(data)
-            # stream_result(annotator,view_img,p,windows)
+            # im0 = stream_result(annotator,view_img,p,windows)
             # write_result(det,names,hide_conf,save_csv,write_to_csv,save_txt,gn,save_conf,txt_path,save_img,save_crop,view_img,hide_labels,annotator,imc,save_dir,p)
             # save_result(save_img,dataset,im0,vid_path,vid_writer,vid_cap,i)
     # print_results_end_yolo(seen,dt,save_txt,save_img,save_dir,imgsz,update,weights)
     return have_result,xyxy_best,x_point,y_point
+    # return have_result,xyxy_best,x_point,y_point,im0
 
 
 
@@ -226,14 +229,15 @@ def Check_Label(names,a,loc,labeltar):
     res = np.sum(list(map(lambda x:names[int(a[loc])]==x,labeltar))) > 0
     return res
 @smart_inference_mode()
-def pred_processing(webcam,im0s,i,save_dir,dataset,frame,im ,save_crop,line_thickness,names):
+def pred_processing(webcam,im0s,i,save_dir,dataset,frame,im ,save_crop):
     s = ""
     im0,s1 = pred_pro_1(webcam,im0s,i)
-    save_path,txt_path,gn, imc,annotator, s2 = pred_pro_2(save_dir,dataset,frame,im,im0 ,save_crop,line_thickness,names)
+    save_path,txt_path,gn, imc, s2 = pred_pro_2(save_dir,dataset,frame,im,im0 ,save_crop)
+    
     s = s1 + s2
-    return im0,save_path,txt_path,gn, imc,annotator ,s
+    return im0,save_path,txt_path,gn, imc ,s
 @smart_inference_mode()
-def pred_pro_2(save_dir,dataset,frame,im ,im0,save_crop,line_thickness,names):
+def pred_pro_2(save_dir,dataset,frame,im ,im0,save_crop):
     s = ""
     p = Path(p)  # to Path
     save_path = str(save_dir / p.name)  # im.jpg
@@ -241,8 +245,8 @@ def pred_pro_2(save_dir,dataset,frame,im ,im0,save_crop,line_thickness,names):
     s += '%gx%g ' % im.shape[2:]  # print string
     gn = torch.tensor(im0.shape)[[1, 0, 1, 0]]  # normalization gain whwh
     imc = im0.copy() if save_crop else im0  # for save_crop
-    annotator = Annotator(im0, line_width=line_thickness, example=str(names))
-    return save_path,txt_path,gn, imc,annotator, s
+    
+    return save_path,txt_path,gn, imc, s
 @smart_inference_mode()
 def pred_pro_1(webcam,im0s,i):
     s = ""
@@ -325,7 +329,8 @@ def stream_result(annotator,view_img,p,windows):
             cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
         cv2.imshow(str(p), im0)
         cv2.waitKey(1)  # 1 millisecond
-        return
+        return im0
+    return im0
 @smart_inference_mode()
 def save_result(save_img,dataset,im0,vid_path,vid_writer,vid_cap,i):
     # Save results (image with detections)
@@ -367,11 +372,15 @@ def write_result(det,names,hide_conf,save_csv,write_to_csv,save_txt,gn,save_conf
 
         # # To Be commented out
         if save_img or save_crop or view_img:  # Add bbox to image
-            c = int(cls)  # integer class
-            label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
-            annotator.box_label(xyxy, label, color=colors(c, True))
+            annotator = add_bounding_box(cls,hide_labels,names,hide_conf,conf,annotator,xyxy)
         if save_crop:
             save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
+    return annotator
+def add_bounding_box(cls,hide_labels,names,hide_conf,conf,annotator,xyxy):
+    c = int(cls)  # integer class
+    label = None if hide_labels else (names[c] if hide_conf else f'{names[c]} {conf:.2f}')
+    annotator.box_label(xyxy, label, color=colors(c, True))
+    return annotator
 @smart_inference_mode()
 def parse_opt():
     parser = argparse.ArgumentParser()
@@ -416,8 +425,10 @@ def capture_and_yolo_read(cap,weightpath,target_labels):
     filename = ROOT / 'temp.jpg'
     cv2.imwrite(filename, image)
     print("a")
+    # have_result,xyxy_best,x,y,img = 
     have_result,xyxy_best,x,y = run_yolo_loop(weights=weightpath,source=filename,source_image= image,target_labels = target_labels)
     return have_result,xyxy_best,x,y
+    # return have_result,xyxy_best,x,y,img
 
 
 
@@ -646,6 +657,7 @@ def Helipad_Track_Land(vehicle,cap,weightPath):
     while True:
         land_speed = 0.5
         loc = checklocation(vehicle)
+        # have_result,xyxy_best,x,y,img
         have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath,target_labels = ["helipad"])
         print("Altitude: ",loc.relative_alt, ", Latitude: ",loc.lat ,", Longtitude: ",loc.lon )
         # dev=dev,
@@ -684,6 +696,7 @@ def Helipad_track(vehicle,cap,weightPath):
     velocity_x, velocity_y = 0,0
     while True:
         
+        # have_result,xyxy_best,x,y,img
         have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath,target_labels = ["helipad"])
         # dev=dev,
         if have_result:
@@ -724,6 +737,7 @@ def waypoint_with_scan(vehicle,latitude,longitude,altitude,cap,weightPath,target
             print("Reached location")
             break
         else:
+            # have_result,xyxy_best,x,y,img
             have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath,target_labels)
             if have_result:
                 loc = checklocation(vehicle)
@@ -965,17 +979,17 @@ def check_location_arrived(vehicle,lat, lon, alt, interval):
             print("Reached location")
             break
         time.sleep(1)
-def set_altitude():
-    set_parameter(vehicle,33,)
+# def set_altitude():
+#     set_parameter(vehicle,33,)
 def set_parameter(vehicle,parameter_id,parameter_value,parameter_type):
     vehicle.param_set_send(vehicle.target_system,vehicle.target_component,parameter_id,parameter_value,parameter_type)
     return
 
 
-def stream_location(vehicle):
+def stream_location(vehicle,interval=200000):
     # msd_id = mavutil.mavlink.GLOBAL_POSITION_INT
     msd_id = 33
-    stream_msg(vehicle,msd_id,200000)
+    stream_msg(vehicle,msd_id,interval)
 
 
 
@@ -1084,6 +1098,7 @@ def waypoint_with_scan_stop(vehicle,latitude,longitude,altitude,cap,weightPath,t
             print("Reached location")
             return False
         else:
+            # have_result,xyxy_best,x,y,img
             have_result,xyxy_best,x,y = capture_and_yolo_read(cap,weightPath,target_labels)
             if have_result:
                 # loc = checklocation(vehicle)

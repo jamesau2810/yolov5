@@ -430,6 +430,7 @@ class CaptureImages:
         images = [x for x in files if x.split('.')[-1].lower() in IMG_FORMATS]
         videos = [x for x in files if x.split('.')[-1].lower() in VID_FORMATS]
         ni, nv = len(images), len(videos)
+        ni += 1
 
         self.img_size = img_size
         self.stride = stride
@@ -488,9 +489,11 @@ class CaptureImages:
         #     assert im0 is not None, f'Image Not Found {path}'
         #     s = f'image {self.count}/{self.nf} {path}: '
         # ret, im0 = self.cap2.read()
-        im0 = self.img_read
         # assert im0 is not None, f'Image Not Found {path}'
         # s = f'image {self.count}/{self.nf} {path}: '
+        
+        im0 = self.img_read
+        self.count += 1
         s = ""
         if self.transforms:
             im = self.transforms(im0)  # transforms
