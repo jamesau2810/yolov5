@@ -102,14 +102,13 @@ modeUsed = "GUIDED"
 # modeUsed = "AUTO"
 # vehicle.set
 vehicle.mode = VehicleMode(modeUsed)
-library.set_origin(vehicle)
-library.set_mode(vehicle,modeUsed)
+# library.set_mode(vehicle,modeUsed)
 # library.stream_location(vehicle)
 # library.arm(vehicle)
 # while True:
 #     print(library.checklocation(vehicle))
 library.instr_2_takeoff(vehicle,modeUsed,altitude=5)
-library.waypoint(vehicle,223346945,1142630053,10)
+library.waypoint(vehicle,223349175,1142630053,10)
 
 #
 

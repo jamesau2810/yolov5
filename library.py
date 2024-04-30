@@ -748,7 +748,7 @@ def waypoint_with_scan(vehicle,latitude,longitude,altitude,cap,weightPath,target
 def instr_2_takeoff(vehicle,modeUsed,altitude = 10):
     
     set_mode(vehicle,modeUsed)
-
+    set_origin(vehicle)
 
     #
     arm(vehicle)
