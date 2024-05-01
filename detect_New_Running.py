@@ -43,6 +43,7 @@ import numpy as np
 import serial
 # import nuc_usb_test
 import library
+import image2video_lib
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
@@ -80,7 +81,7 @@ def main(opt):
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # library.run_yolo_loop(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-
+    save_img = []
     while True:
         ret, image = cap.read()
         filename = ROOT / 'temp.jpg'
@@ -99,7 +100,11 @@ def main(opt):
             # dev=dev,
             # serialObj = 
             )
-
+        img_with_box = image2video_lib.draw_bounding_box(image,[xyxy_best])
+        save_img.append(img_with_box)
+        if have_result:
+            break
+    
         # library.Box2Send(xyxy_best,x,y,serialObj)
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #     ret, image = cap.read()

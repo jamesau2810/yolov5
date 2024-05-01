@@ -1,11 +1,13 @@
 import sys
-if 'os' not in sys.modules:
-    import os
+# Standard Library Dependency
+import os
+# Other package
 if 'PIL' not in sys.modules:
-    from PIL import Image
+    from PIL import Image, ImageDraw
 if 'cv2' not in sys.modules:
     import cv2
-
+if 'numpy' not in sys.modules:
+    import numpy as np
 # Get the current working directory
 current_path = os.getcwd()
 print(current_path)
@@ -111,3 +113,11 @@ def display_video_from_images(folder):
 #     create_video_from_images(img_dir)
 #     # Display the video as output
 #     display_video_from_images(img_dir)
+def draw_bounding_box(img_A,boxes):
+    vsample = Image.fromarray(img_A)
+    draw = ImageDraw.Draw(vsample)
+    for box in boxes:
+        draw.rectangle(list(box),fill = None,outline = "red")
+    final_img = cv2.cvtColor(np.asarray(vsample),cv2.COLOR_RGB2BGR)
+    return final_img
+

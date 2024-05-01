@@ -426,10 +426,10 @@ def parse_opt():
 def capture_and_yolo_read(cap,weightpath,target_labels):
     ret, image = cap.read()
     filename = ROOT / 'temp.jpg'
-    cv2.imwrite(filename, image)
-    print("a")
+    # cv2.imwrite(filename, image)
+    # print("a")
     # have_result,xyxy_best,x,y,img = 
-    have_result,xyxy_best,x,y = run_yolo_loop(weights=weightpath,source=filename,source_image= image,target_labels = target_labels)
+    have_result,xyxy_best,x,y = run_yolo_loop(weights=weightpath,source=filename,source_image= [image],target_labels = target_labels,direct_open=True)
     return have_result,xyxy_best,x,y
     # return have_result,xyxy_best,x,y,img
 
