@@ -103,7 +103,7 @@ def main(opt):
             # dev=dev,
             # serialObj = 
             )
-        img_with_box = image2video_lib.draw_bounding_box(image,[xyxy_best])
+        img_with_box = image2video_lib.draw_bounding_box(image,[xyxy_best]) if have_result else image
         # plt.imshow(img_with_box)
         # plt.show()
         cv2.imshow('current_img', img_with_box)
