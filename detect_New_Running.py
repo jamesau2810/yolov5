@@ -36,7 +36,7 @@ import sys
 from pathlib import Path
 import cv2
 import numpy as np
-import keyboard
+# import keyboard
 # import torch
 # import socket
 # import usb.core
@@ -83,7 +83,8 @@ def main(opt):
     # library.run_yolo_loop(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
     save_img = []
-    while True:
+    # while True:
+    for _ in range(10):
         ret, image = cap.read()
         filename = ROOT / 'temp.jpg'
         # cv2.imwrite(filename, image)
@@ -103,8 +104,8 @@ def main(opt):
             )
         img_with_box = image2video_lib.draw_bounding_box(image,[xyxy_best])
         save_img.append(img_with_box)
-        if keyboard.is_pressed('q'):
-            break
+        # if keyboard.is_pressed('q'):
+        #     break
     image2video_lib.create_video_from_images_2(save_img,640,480)
         # library.Box2Send(xyxy_best,x,y,serialObj)
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
