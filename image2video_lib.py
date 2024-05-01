@@ -117,11 +117,11 @@ def display_video_from_images(folder):
 #     # Display the video as output
 #     display_video_from_images(img_dir)
 def draw_bounding_box(img_A,boxes):
-    vsample = Image.fromarray(img_A)
+    vsample = Image.fromarray(cv2.cvtColor(img_A,cv2.COLOR_BGR2RGB))
     draw = ImageDraw.Draw(vsample)
     for box in boxes:
         draw.rectangle(list(box),fill = None,outline = "red")
-    # final_img = cv2.cvtColor(np.asarray(vsample),cv2.COLOR_RGB2BGR)
-    final_img = np.asarray(vsample)
+    final_img = cv2.cvtColor(np.asarray(vsample),cv2.COLOR_RGB2BGR)
+    # final_img = np.asarray(vsample)
     return final_img
 
