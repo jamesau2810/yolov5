@@ -63,7 +63,8 @@ pixhawk_path = '/dev/ttyUSB0'
 def run_yolo_loop(
         weights=ROOT / 'yolov5s.pt',  # model path or triton URL
         source=ROOT / 'data/images',  # file/dir/URL/glob/screen/0(webcam)
-        source_image = np.zeros((640,640)),
+        source_image = [np.zeros((640,640))],
+        # source_image = np.zeros((640,640)),
         data=ROOT / 'data/coco128.yaml',  # dataset.yaml path
         imgsz=(640, 640),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
@@ -123,8 +124,8 @@ def run_yolo_loop(
     elif screenshot:
         dataset = LoadScreenshots(source, img_size=imgsz, stride=stride, auto=pt)
     else:
-        # dataset = CaptureImages(img_added=source_image,img_size=imgsz,stride=stride,auto=pt,vid_stride=vid_stride)
-        dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
+        dataset = CaptureImages(img_added=source_image,img_size=imgsz,stride=stride,auto=pt,vid_stride=vid_stride)
+        # dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
     vid_path, vid_writer = [None] * bs, [None] * bs
 
     # Run inference
