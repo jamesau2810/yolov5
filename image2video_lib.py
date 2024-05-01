@@ -121,6 +121,7 @@ def draw_bounding_box(img_A,boxes):
     draw = ImageDraw.Draw(vsample)
     for box in boxes:
         draw.rectangle(list(box),fill = None,outline = "red")
-    final_img = cv2.cvtColor(np.asarray(vsample),cv2.COLOR_RGB2BGR)
+    # final_img = cv2.cvtColor(np.asarray(vsample),cv2.COLOR_RGB2BGR)
+    final_img = np.asarray(vsample)
     return final_img
 
