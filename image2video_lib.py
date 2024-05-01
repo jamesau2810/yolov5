@@ -2,13 +2,15 @@ import sys
 # Standard Library Dependency
 import os
 # Other package
-if 'PIL' not in sys.modules:
-    from PIL import Image, ImageDraw
-if 'cv2' not in sys.modules:
-    import cv2
-if 'numpy' not in sys.modules:
-    import numpy as np
-
+# if 'PIL' not in sys.modules:
+#     from PIL import Image, ImageDraw
+# if 'cv2' not in sys.modules:
+#     import cv2
+# if 'numpy' not in sys.modules:
+#     import numpy as np
+from PIL import Image, ImageDraw
+import cv2
+import numpy as np
 # Get the current working directory
 current_path = os.getcwd()
 print(current_path)
