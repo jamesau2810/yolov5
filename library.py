@@ -93,6 +93,7 @@ def run_yolo_loop(
         dnn=False,  # use OpenCV DNN for ONNX inference
         vid_stride=1,  # video frame-rate stride
         label_display = False,
+        direct_open = False,
         # dev = usb.core.find(idVendor=0x045e, idProduct=0x028e),
         # serialObj = serial.Serial(pixhawk_path)
         # socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM),
@@ -123,9 +124,10 @@ def run_yolo_loop(
         bs = len(dataset)
     elif screenshot:
         dataset = LoadScreenshots(source, img_size=imgsz, stride=stride, auto=pt)
-    else:
+    elif direct_open:
         dataset = CaptureImages(img_added=source_image,img_size=imgsz,stride=stride,auto=pt,vid_stride=vid_stride)
-        # dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
+    else:
+        dataset = LoadImages(source, img_size=imgsz, stride=stride, auto=pt, vid_stride=vid_stride)
     vid_path, vid_writer = [None] * bs, [None] * bs
 
     # Run inference
