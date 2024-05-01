@@ -8,6 +8,7 @@ if 'cv2' not in sys.modules:
     import cv2
 if 'numpy' not in sys.modules:
     import numpy as np
+
 # Get the current working directory
 current_path = os.getcwd()
 print(current_path)

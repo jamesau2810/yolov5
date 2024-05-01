@@ -36,6 +36,7 @@ import sys
 from pathlib import Path
 import cv2
 import numpy as np
+import keyboard
 # import torch
 # import socket
 # import usb.core
@@ -102,9 +103,9 @@ def main(opt):
             )
         img_with_box = image2video_lib.draw_bounding_box(image,[xyxy_best])
         save_img.append(img_with_box)
-        if have_result:
+        if keyboard.is_pressed('q'):
             break
-    
+    image2video_lib.create_video_from_images_2(save_img,640,480)
         # library.Box2Send(xyxy_best,x,y,serialObj)
     # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     #     ret, image = cap.read()
