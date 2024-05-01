@@ -104,9 +104,10 @@ def main(opt):
             # serialObj = 
             )
         img_with_box = image2video_lib.draw_bounding_box(image,[xyxy_best])
-        plt.imshow(img_with_box)
-        plt.show()
-        # cv2.imshow('current_img', img_with_box)
+        # plt.imshow(img_with_box)
+        # plt.show()
+        cv2.imshow('current_img', img_with_box)
+        cv2.waitKey(1)
         # save_img.append(img_with_box)
         # if keyboard.is_pressed('q'):
         #     break
