@@ -36,6 +36,7 @@ import sys
 from pathlib import Path
 import cv2
 import numpy as np
+import matplotlib.pyplot as plt
 # import keyboard
 # import torch
 # import socket
@@ -103,7 +104,9 @@ def main(opt):
             # serialObj = 
             )
         img_with_box = image2video_lib.draw_bounding_box(image,[xyxy_best])
-        cv2.imshow('current_img', img_with_box)
+        plt.imshow(img_with_box)
+        plt.show()
+        # cv2.imshow('current_img', img_with_box)
         # save_img.append(img_with_box)
         # if keyboard.is_pressed('q'):
         #     break
