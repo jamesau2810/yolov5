@@ -92,7 +92,7 @@ def main(opt):
         # have_result,xyxy_best,x,y,img 
         have_result,xyxy_best,x,y = library.run_yolo_loop(
             # weights=ROOT / 'best_Helipad.pt',
-            weights=ROOT / 'best_Drown_2.pt',
+            weights=ROOT / 'best_Drown_3.pt',
             source=filename,
             source_image= [image],
             # source_image= image,

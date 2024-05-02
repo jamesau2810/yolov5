@@ -273,7 +273,7 @@ def main(opt):
     # run(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
     # run(weights=ROOT / 'best_Helipad.pt',source=filename)
-    run(weights=ROOT / 'best_Drown_2.pt',source=filename)
+    run(weights=ROOT / 'best_Drown_3.pt',source=filename)
     #/home/jamesau/Downloads/yolov5-master/best_Helipad.pt
     #/home/jamesau/Downloads/yolov5-master/516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg
 

@@ -100,7 +100,7 @@ def main(opt):
     # run(**vars(opt))
     # detect.run(weights=ROOT/'best_Helipad.pt',source=ROOT/'516heli020_jpg.rf.350ad82d7b07f0fd9dcd0bc49ff1f3a7.jpg')
     
-    detect.run(weights=ROOT/'best_Drown_2.pt',source=ROOT/'3-727-Drowning-Stock-Videos-and-Royalty-Free-Footage-iStock_2_mp4-1_jpg.rf.3ca51f148e8382f5ba64451f97a7d32e.jpg')
+    detect.run(weights=ROOT/'best_Drown_3.pt',source=ROOT/'3-727-Drowning-Stock-Videos-and-Royalty-Free-Footage-iStock_2_mp4-1_jpg.rf.3ca51f148e8382f5ba64451f97a7d32e.jpg')
 
 
 if __name__ == "__main__":

@@ -101,7 +101,7 @@ def main(opt):
     # library.Helipad_track(vehicle,cap,weightPath = ROOT / 'best_Helipad.pt')
     library.Helipad_Track_Land(vehicle,cap,weightPath = ROOT / 'best_Helipad.pt')
     # library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best_Helipad.pt',["helipad"])
-    # library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best_Drown_2.pt',["Out of Water","drowning","3"])
+    # library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best_Drown_3.pt',["Out of Water","drowning","3"])
     # library.return_to_launch(vehicle)
     # library.SurveyScan(vehicle,waypoints_points,cap,ROOT / 'best_Helipad.pt',["helipad"])
     library.disarm(vehicle)
