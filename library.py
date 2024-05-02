@@ -433,15 +433,15 @@ def capture_and_yolo_read(cap,weightpath,target_labels):
     return have_result,xyxy_best,x,y
     # return have_result,xyxy_best,x,y,img
 
-
-
-
-def ArduinoSent(left, up, width_x, width_y, serialObj):
-    SendItem = '{0:0=3d}'.format(left) + '{0:0=3d}'.format(up) + '{0:0=3d}'.format(width_x) + '{0:0=3d}'.format(width_y)
+def old_arduino_format(left, up, width_x, width_y):
+    return '{0:0=3d}'.format(left) + '{0:0=3d}'.format(up) + '{0:0=3d}'.format(width_x) + '{0:0=3d}'.format(width_y)
+def feet_arduino_format(release):
+    stri = 'H' if release else 'I'
+    return stri
+def ArduinoSent(SendItem, serialObj):
     enc = SendItem.encode(encoding="utf-8")
     ied = serialObj.write(enc)
     return ied
-
 
 
 
