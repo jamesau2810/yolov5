@@ -40,7 +40,11 @@ if __name__ == '__main__':
     ied = library.ArduinoSent(library.feet_arduino_format(False),serialObj)
     # serialObj.flush()
     print(ied)
-    print(serialObj.read(size=12))
+    # arr = []
+    while serialObj.available() > 0:
+        # arr.append(serialObj.read())
+        print(serialObj.read())
+    # print(arr)
     # # x = 0
     # # while x< 12:
     
