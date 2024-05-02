@@ -37,10 +37,10 @@ if __name__ == '__main__':
     library.old_arduino_format(left,up,width_x,width_y)
     library.ArduinoSent(library.feet_arduino_format(True),serialObj)
     time.sleep(3)
-    library.ArduinoSent(library.feet_arduino_format(False),serialObj)
+    ied = library.ArduinoSent(library.feet_arduino_format(False),serialObj)
     # serialObj.flush()
-    # print(ied)
-    # print(serialObj.read(size=12))
+    print(ied)
+    print(serialObj.read(size=12))
     # # x = 0
     # # while x< 12:
     
