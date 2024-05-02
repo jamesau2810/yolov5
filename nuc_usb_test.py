@@ -35,11 +35,12 @@ if __name__ == '__main__':
     # # Write data to the USB port
     # serialObj.write( b'Hello, World!')
     library.old_arduino_format(left,up,width_x,width_y)
-    library.ArduinoSent(library.feet_arduino_format(True),serialObj)
+    iex = library.ArduinoSent(library.feet_arduino_format(True),serialObj)
     time.sleep(3)
-    ied = library.ArduinoSent(library.feet_arduino_format(False),serialObj)
+    # ied = library.ArduinoSent(library.feet_arduino_format(False),serialObj)
     # serialObj.flush()
-    print(ied)
+    print(iex)
+    # print(ied)
     # arr = []
     
     # while serialObj.in_waiting:
