@@ -436,7 +436,7 @@ def capture_and_yolo_read(cap,weightpath,target_labels):
 def old_arduino_format(left, up, width_x, width_y):
     return '{0:0=3d}'.format(left) + '{0:0=3d}'.format(up) + '{0:0=3d}'.format(width_x) + '{0:0=3d}'.format(width_y)
 def feet_arduino_format(inhale):
-    return 'I' if inhale else 'H'
+    return '1' if inhale else '0'
 def ArduinoSent(SendItem, serialObj):
     enc = SendItem.encode(encoding="utf-8")
     ied = serialObj.write(enc)
