@@ -36,8 +36,6 @@ import sys
 from pathlib import Path
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
-# import keyboard
 # import torch
 # import socket
 # import usb.core
@@ -45,7 +43,7 @@ import matplotlib.pyplot as plt
 import serial
 # import nuc_usb_test
 import library
-import image2video_lib
+from dronekit import connect, VehicleMode, LocationGlobalRelative, APIException
 FILE = Path(__file__).resolve()
 ROOT = FILE.parents[0]  # YOLOv5 root directory
 if str(ROOT) not in sys.path:
@@ -60,13 +58,29 @@ from utils.general import (LOGGER, Profile, check_file, check_img_size, check_im
                            increment_path, non_max_suppression, print_args, scale_boxes, strip_optimizer, xyxy2xywh)
 from utils.torch_utils import select_device, smart_inference_mode
 
-
-
-
-
+        
+    # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    #     ret, image = cap.read()
+    #     filename = ROOT / 'temp.jpg'
+    #     cv2.imwrite(filename, image)
+    #     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
+    #     # library.run_yolo_loop(**vars(opt))
+    #     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
+    #     library.run_yolo_loop(weights=ROOT / 'best_Helipad.pt',source=filename,dev=dev)
+    #     library.run_yolo_loop(weights=ROOT / 'best_Helipad.pt',source=filename) # ,socket = s
+    #/home/jamesau/Downloads/yolov5-master/best_Helipad.pt
+    #/home/jamesau/Downloads/yolov5-master/516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg
 
 
 def main(opt):
+    vehicle = library.connectMyCopter()
+    # vehicle.mode = VehicleMode("GUIDED")
+    # modeUsed = ""
+    # modeUsed = "STABILIZE"
+    modeUsed = "GUIDED"
+    # modeUsed = "AUTO"
+    vehicle.mode = VehicleMode(modeUsed)
+    library.instr_2_takeoff(vehicle,modeUsed,2)
     # dev = usb.core.find(idVendor=0x045e, idProduct=0x028e)
     # # If the device is not found, raise an error
     # if dev is None:
@@ -80,51 +94,17 @@ def main(opt):
     cap.set(cv2.CAP_PROP_FPS, 36)
     # serialObj = serial.Serial(library.pixhawk_path)
     time.sleep(3)
+    wypts,waypoints_points = library.waypoint_file_read(ROOT / 'Trial002_waypoints.txt')
     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
     # library.run_yolo_loop(**vars(opt))
     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-    save_img = []
-    while True:
-        # for _ in range(10):
-        ret, image = cap.read()
-        filename = ROOT / 'temp.jpg'
-        # cv2.imwrite(filename, image)
-        # have_result,xyxy_best,x,y,img 
-        have_result,xyxy_best,x,y = library.run_yolo_loop(
-            # weights=ROOT / 'best_Helipad.pt',
-            weights=ROOT / 'best_Drown_2.pt',
-            source=filename,
-            source_image= [image],
-            # source_image= image,
-            # target_labels = ["helipad"],
-            target_labels = ["Out of Water","drowning","3"],
-            label_display = True,
-            direct_open= True,
-            # dev=dev,
-            # serialObj = 
-            )
-        img_with_box = image2video_lib.draw_bounding_box(image,[xyxy_best]) if have_result else image
-        # plt.imshow(img_with_box)
-        # plt.show()
-        cv2.imshow('current_img', img_with_box)
-        cv2.waitKey(1)
-        # save_img.append(img_with_box)
-        # if keyboard.is_pressed('q'):
-        #     break
-    # image2video_lib.create_video_from_images_2(save_img,640,480)
-        # library.Box2Send(xyxy_best,x,y,serialObj)
-    # with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    #     ret, image = cap.read()
-    #     filename = ROOT / 'temp.jpg'
-    #     cv2.imwrite(filename, image)
-    #     # check_requirements(ROOT / 'requirements.txt', exclude=('tensorboard', 'thop'))
-    #     # library.run_yolo_loop(**vars(opt))
-    #     # ROOT / '516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg'
-    #     library.run_yolo_loop(weights=ROOT / 'best_Helipad.pt',source=filename,dev=dev)
-    #     library.run_yolo_loop(weights=ROOT / 'best_Helipad.pt',source=filename) # ,socket = s
-    #/home/jamesau/Downloads/yolov5-master/best_Helipad.pt
-    #/home/jamesau/Downloads/yolov5-master/516heli014_jpg.rf.32d59be86a560186676fe6c309d1b913.jpg
-
+    # library.Helipad_track(vehicle,cap,weightPath = ROOT / 'best_Helipad.pt')
+    library.Helipad_Track_Land(vehicle,cap,weightPath = ROOT / 'best_Helipad.pt')
+    # library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best_Helipad.pt',["helipad"])
+    # library.SurveyScan_with_stop(vehicle,waypoints_points,cap,ROOT / 'best_Drown_2.pt',["Out of Water","drowning","3"])
+    # library.return_to_launch(vehicle)
+    # library.SurveyScan(vehicle,waypoints_points,cap,ROOT / 'best_Helipad.pt',["helipad"])
+    library.disarm(vehicle)
 
 if __name__ == '__main__':
     # tic = time.perf_counter()
