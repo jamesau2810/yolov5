@@ -5,6 +5,7 @@ import time
 import library
 path = '/dev/ttyACM0'
 # path = '/dev/cu.usbmodem141301'
+# path = '/dev/cu.usbmodem141201'
 
 
 if __name__ == '__main__':
