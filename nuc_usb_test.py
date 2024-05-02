@@ -41,9 +41,10 @@ if __name__ == '__main__':
     # serialObj.flush()
     print(ied)
     # arr = []
-    while serialObj.available() > 0:
-        # arr.append(serialObj.read())
-        print(serialObj.read())
+    print(serialObj.readline())
+    # while serialObj.available() > 0:
+    #     # arr.append(serialObj.read())
+    #     print(serialObj.read())
     # print(arr)
     # # x = 0
     # # while x< 12:
