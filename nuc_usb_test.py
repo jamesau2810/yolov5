@@ -1,9 +1,11 @@
-"""
+
 # Python code transmits a byte to Arduino /Microcontroller
 import serial
 import time
+import library
 path = '/dev/ttyACM0'
 # path = '/dev/cu.usbmodem141301'
+# path = '/dev/cu.usbmodem141201'
 
 
 if __name__ == '__main__':
@@ -32,14 +34,25 @@ if __name__ == '__main__':
     # print(enc)
     # # Write data to the USB port
     # serialObj.write( b'Hello, World!')
-    ArduinoSent(left,up,width_x,width_y,serialObj)
+    library.old_arduino_format(left,up,width_x,width_y)
+    # iex = library.Landing_gear_open(serialObj)
+    time.sleep(3)
+    # ied = library.Landing_gear_close(serialObj)
     # serialObj.flush()
+    # print(iex)
     # print(ied)
-    print(serialObj.read(size=12))
+    # arr = []
+    
+    # while serialObj.in_waiting:
+    while True:
+        # arr.append(serialObj.read())
+        print(serialObj.readline())
+    #     print(serialObj.read())
+    # print(arr)
     # # x = 0
     # # while x< 12:
-    
-"""
+
+
 
 
 
@@ -88,6 +101,7 @@ data = dev.read(0x81, 1024)
 # Print the data
 print(data)
 """
+"""
 # No way to Set the Copter to GUIDE mode in python code, plz do so using Mission planner
 # python nuc_usb_test.py --connect localhost:14550
 # from dronekit import connect , VehicleMode , LocationGlobalRelative , APIException
@@ -134,7 +148,7 @@ print("Back")
 library.return_to_launch(vehicle)
 print(library.checklocation(vehicle))
 # library.disarm(vehicle)
-# 
+"""# 
 #
 # 
 #

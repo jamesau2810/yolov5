@@ -433,20 +433,19 @@ def capture_and_yolo_read(cap,weightpath,target_labels):
     return have_result,xyxy_best,x,y
     # return have_result,xyxy_best,x,y,img
 
-
-
-
-def ArduinoSent(left, up, width_x, width_y, serialObj):
-    SendItem = '{0:0=3d}'.format(left) + '{0:0=3d}'.format(up) + '{0:0=3d}'.format(width_x) + '{0:0=3d}'.format(width_y)
+def old_arduino_format(left, up, width_x, width_y):
+    return '{0:0=3d}'.format(left) + '{0:0=3d}'.format(up) + '{0:0=3d}'.format(width_x) + '{0:0=3d}'.format(width_y)
+def feet_arduino_format(inhale):
+    return '1' if inhale else '0'
+def ArduinoSent(SendItem, serialObj):
     enc = SendItem.encode(encoding="utf-8")
     ied = serialObj.write(enc)
     return ied
 
-
-
-
-
-
+def Landing_gear_open(serialObj):
+    return ArduinoSent(feet_arduino_format(True),serialObj)
+def Landing_gear_close(serialObj):
+    return ArduinoSent(feet_arduino_format(False),serialObj)
 
 def printStatus(vehicle):
     # vehicle is an instance of the Vehicle class
