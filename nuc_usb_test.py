@@ -36,6 +36,7 @@ if __name__ == '__main__':
     # serialObj.write( b'Hello, World!')
     library.old_arduino_format(left,up,width_x,width_y)
     library.ArduinoSent(library.feet_arduino_format(True),serialObj)
+    library.ArduinoSent(library.feet_arduino_format(False),serialObj)
     # serialObj.flush()
     # print(ied)
     # print(serialObj.read(size=12))
