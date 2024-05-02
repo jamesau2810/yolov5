@@ -442,10 +442,10 @@ def ArduinoSent(SendItem, serialObj):
     ied = serialObj.write(enc)
     return ied
 
-
-
-
-
+def Landing_gear_open(serialObj):
+    return ArduinoSent(feet_arduino_format(True),serialObj)
+def Landing_gear_close(serialObj):
+    return ArduinoSent(feet_arduino_format(False),serialObj)
 
 def printStatus(vehicle):
     # vehicle is an instance of the Vehicle class
