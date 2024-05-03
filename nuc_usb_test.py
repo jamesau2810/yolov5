@@ -1,45 +1,59 @@
-# """
-# # Python code transmits a byte to Arduino /Microcontroller
-# import serial
-# import time
-# path = '/dev/ttyACM0'
-# # path = '/dev/cu.usbmodem141301'
 
 
-# if __name__ == '__main__':
-#     # SerialObj = serial.Serial(path) # COMxx  format on Windows
-#     #                   # ttyUSBx format on Linux COM24 /dev/cu.usbmodem141301 /dev/ttyACM0
 
-#     # SerialObj.baudrate = 9600
-#     # SerialObj.parity  ='N'   # No parity
-#     # SerialObj.stopbits = 1   # Number of Stop bits = 1
-#     # time.sleep(3)
-#     # SerialObj.write(b'A')    #transmit 'A' (8bit) to micro/Arduino
-#     # print(SerialObj.read(size=1))
-#     # SerialObj.close()      # Close the port
-#     # 150070240160
-#     serialObj = serial.Serial(path,timeout=5)
-#     # serialObj.baudrate = 9600  # set Baud rate to 9600
-#     # SerialObj.bytesize = 8   # Number of data bits = 8
-#     left = 150
-#     up = 120 
-#     width_x = 240
-#     width_y = 160
-#     # SendItem="#"+str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)+"%"
-#     # "150070240160"
-#     time.sleep(3)
-#     # enc =  SendItem.encode('')
-#     # print(enc)
-#     # # Write data to the USB port
-#     # serialObj.write( b'Hello, World!')
-#     ArduinoSent(left,up,width_x,width_y,serialObj)
-#     # serialObj.flush()
-#     # print(ied)
-#     print(serialObj.read(size=12))
-#     # # x = 0
-#     # # while x< 12:
+# Python code transmits a byte to Arduino /Microcontroller
+import serial
+import time
+import library
+path = '/dev/ttyACM0'
+# path = '/dev/cu.usbmodem141301'
+# path = '/dev/cu.usbmodem141201'
+
+if __name__ == '__main__':
+
+
+    # SerialObj.baudrate = 9600
+    # SerialObj.parity  ='N'   # No parity
+    # SerialObj.stopbits = 1   # Number of Stop bits = 1
+    # time.sleep(3)
+    # SerialObj.write(b'A')    #transmit 'A' (8bit) to micro/Arduino
+    # print(SerialObj.read(size=1))
+    # SerialObj.close()      # Close the port
+    # 150070240160
+    serialObj = serial.Serial(path,timeout=5)
+    # serialObj.baudrate = 9600  # set Baud rate to 9600
+    # SerialObj.bytesize = 8   # Number of data bits = 8
+    left = 150
+    up = 120 
+    width_x = 240
+    width_y = 160
+    # SendItem="#"+str(left)+"&"+str(up)+"&"+str(width_x)+"&"+str(width_y)+"%"
+    # "150070240160"
+    time.sleep(3)
+    # enc =  SendItem.encode('')
+    # print(enc)
+    # # Write data to the USB port
+    # serialObj.write( b'Hello, World!')
+    library.old_arduino_format(left,up,width_x,width_y)
+    # iex = library.Landing_gear_open(serialObj)
+    time.sleep(3)
+    # ied = library.Landing_gear_close(serialObj)
+    # serialObj.flush()
+    # print(iex)
+    # print(ied)
+    # arr = []
     
-# """
+    # while serialObj.in_waiting:
+    while True:
+        # arr.append(serialObj.read())
+        print(serialObj.readline())
+    #     print(serialObj.read())
+    # print(arr)
+    # # x = 0
+    # # while x< 12:
+
+
+
 
 
 
@@ -88,6 +102,7 @@ data = dev.read(0x81, 1024)
 # Print the data
 print(data)
 """
+"""
 # No way to Set the Copter to GUIDE mode in python code, plz do so using Mission planner
 # python nuc_usb_test.py --connect localhost:14550
 # from dronekit import connect , VehicleMode , LocationGlobalRelative , APIException
@@ -134,7 +149,7 @@ print("Back")
 library.return_to_launch(vehicle)
 print(library.checklocation(vehicle))
 # library.disarm(vehicle)
-# 
+"""# 
 #
 # 
 #
