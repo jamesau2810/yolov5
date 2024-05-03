@@ -1,5 +1,5 @@
 
-
+"""
 
 # Python code transmits a byte to Arduino /Microcontroller
 import serial
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     # # while x< 12:
 
 
-
+"""
 
 
 
@@ -102,7 +102,7 @@ data = dev.read(0x81, 1024)
 # Print the data
 print(data)
 """
-"""
+
 # No way to Set the Copter to GUIDE mode in python code, plz do so using Mission planner
 # python nuc_usb_test.py --connect localhost:14550
 # from dronekit import connect , VehicleMode , LocationGlobalRelative , APIException
@@ -149,7 +149,7 @@ print("Back")
 library.return_to_launch(vehicle)
 print(library.checklocation(vehicle))
 # library.disarm(vehicle)
-"""# 
+# 
 #
 # 
 #
